@@ -5,3 +5,17 @@ Step 1 - Extract the data
 
 data-extraction folder
 using ao3-api, get all the search results for a specific fandom into a csv file with timestamps
+
+
+2 files per fandom/search
+-metadata = information for a user interface 
+-no md=all stats information
+
+relational database
+mariadb server
+
+python script to load new info- 
+
+
+-to do:- cronjob for the dataextraction
+
