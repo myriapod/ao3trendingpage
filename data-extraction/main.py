@@ -30,15 +30,6 @@ data_format = {"authors": "",
                 "relationships": "",
                 "restricted": "",
                 "series": "",
-                "stats": {"timestamp": "",
-                        "comments": "",
-                        "kudos": "",
-                        "bookmarks": "",
-                        "hits": "",
-                        "date_edited": "",
-                        "date_published": "",
-                        "date_updated": ""
-                        },
                 "status": "",
                 "summary": "",
                 "tags": "",
@@ -47,26 +38,48 @@ data_format = {"authors": "",
                 "words": "",
                 "id": "",
                 }
+stats_format = {"id": "",
+                "timestamp": "",
+                "comments": "",
+                "kudos": "",
+                "bookmarks": "",
+                "hits": "",
+                "date_edited": "",
+                "date_published": "",
+                "date_updated": "",
+                }       
 
 for fandom in fandom_list:
     search = AO3.Search(fandoms=fandom)
     timestamp = datetime.now()
     search.update()
+
     fandom = fandom.strip().replace('*','')
     print(fandom, search.total_results, search.pages,len(search.results)) # type: ignore
+
+    with open(f'{file_storage}{fandom}/{fandom}_{timestamp}_metadata.csv', 'w') as f:
+        w = csv.DictWriter(f, data_format.keys())
+        w.writeheader()
+    with open(f'{file_storage}{fandom}/{fandom}_{timestamp}.csv', 'w') as f:
+        w = csv.DictWriter(f, stats_format.keys())
+        w.writeheader()
+    
     for i in range(0,search.pages):
         search.page=i
         for result in search.results: # type: ignore
             workdata = deepcopy(data_format)
-            for key in workdata.keys():
-                if key in result.metadata.keys():
+            statdata = deepcopy(stats_format)
+            statdata["timestamp"] = timestamp # type: ignore
+            
+            for key in result.metadata.keys():
+                if key in workdata.keys():
                     workdata[key] = result.metadata[key]
-                elif key == "stats":
-                    for keyk in workdata["stats"]:
-                        if keyk in result.metadata.keys():
-                            workdata["stats"][keyk] = result.metadata[keyk]
-            workdata["stats"]["timestamp"]=timestamp
+                if key in statdata.keys():
+                    statdata[key] = result.metadata[key]
 
-            with open(f'{file_storage}{fandom}/{fandom}_{timestamp}.csv', 'a') as f:
+            with open(f'{file_storage}{fandom}/{fandom}_{timestamp}_metadata.csv', 'a') as f:
                 w = csv.DictWriter(f, workdata.keys())
                 w.writerow(workdata)
+            with open(f'{file_storage}{fandom}/{fandom}_{timestamp}.csv', 'a') as f:
+                w = csv.DictWriter(f, stats_format.keys())
+                w.writerow(statdata)
