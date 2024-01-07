@@ -1,4 +1,4 @@
-from DataExtraction.search import Search
+from packages.ao3search import Search
 
 data_format = {"authors": "",
                 "categories": "",

@@ -1,9 +1,9 @@
-from search import Search
-from SqlServer.sqlimport import SQLServer
+from packages.ao3search import Search
+from packages.sqlimport import SQLServer
 
 
 fandom_list = []
-with open(f'fandom_list.txt', 'r') as fl:
+with open(f'packages/fandom_list.txt', 'r') as fl:
     for line in fl.readlines():
         fandom_list.append(line)    
 

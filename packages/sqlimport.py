@@ -5,11 +5,11 @@ from dotenv import dotenv_values
 
 class SQLServer():
     def __init__(self):
-        self.username = dotenv_values(".env")["MDBUSER"]
-        self.password = dotenv_values(".env")["MDBPWD"]
-        self.host="localhost"
-        self.database="ao3trendingpage"
-        self.table="stats"
+        self.username = dotenv_values("packages/.env")["MDBUSER"]
+        self.password = dotenv_values("packages/.env")["MDBPWD"]
+        self.host = dotenv_values("packages/.env")["SQLHOST"]
+        self.database = dotenv_values("packages/.env")["DATABASE"]
+        self.table = dotenv_values("packages/.env")["TABLE"]
         self.cursor = None
         self.conn = None
 
@@ -38,7 +38,7 @@ class SQLServer():
                 VALUES 
                 {entry["fandom"], entry["id"], entry["timestmp"], entry["comments"], entry["kudos"], entry["bookmarks"], entry["hits"], entry["date_edited"], entry["date_published"], entry["date_updated"]}'''
                 )
-            print(f'added {entry["fandom"]}, {entry["id"]}')
+            # print(f'added {entry["fandom"]}, {entry["id"]}')
         
             self.conn.commit()
             
