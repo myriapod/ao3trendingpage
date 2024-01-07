@@ -11,7 +11,7 @@ class Search():
         self.username = dotenv_values(".env")["USERNAME"]
         self.password = dotenv_values(".env")["PASSWORD"]
         self.results = []
-        self.time = datetime.now()
+        self.time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     def ao3_connect(self):
         return AO3.Session(self.username, self.password)
@@ -26,14 +26,14 @@ class Search():
         stats_format = {
                 "fandom": fandom,
                 "id": 0,
-                "time": self.time,
+                "timestmp": self.time,
                 "comments": 0,
                 "kudos": 0,
                 "bookmarks": 0,
                 "hits": 0,
-                "date_edited": "0000-00-00",
-                "date_published": "0000-00-00",
-                "date_updated": "0000-00-00",
+                "date_edited": "1111-11-11",
+                "date_published": "1111-11-11",
+                "date_updated": "1111-11-11",
                 } 
 
         

@@ -1,9 +1,8 @@
-CREATE TABLE stats 
-(
+CREATE TABLE stats(   
     id int auto_increment PRIMARY KEY,
     fandom varchar(250),
     workid int,
-    timestamp timestamp,
+    timestmp timestamp,
     comments int,
     kudos int,
     bookmarks int,

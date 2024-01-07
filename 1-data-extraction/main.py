@@ -15,3 +15,4 @@ for fandom in fandom_list:
     sqlserver = SQLServer()
     sqlserver.connection()
     sqlserver.add(results)
+    sqlserver.disconnection()
