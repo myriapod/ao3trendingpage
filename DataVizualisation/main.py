@@ -1,15 +1,4 @@
-import AO3
-from dotenv import dotenv_values
-from datetime import datetime
-import csv
-from pprint import pprint
-from copy import deepcopy
-
-ao3session = dotenv_values(".env")
-username = ao3session["USERNAME"]
-password = ao3session["PASSWORD"]
-
-session = AO3.Session(username, password)
+from DataExtraction.search import Search
 
 data_format = {"authors": "",
                 "categories": "",
@@ -32,10 +21,10 @@ data_format = {"authors": "",
                 "id": "",
                 }
 
-work = AO3.Work(workid=id)
+"""work = AO3.Work(workid=id)
 
 workdata = deepcopy(data_format)
 
 for key in work.metadata.keys():
     if key in workdata.keys():
-        workdata[key] = work.metadata[key]
+        workdata[key] = work.metadata[key]"""

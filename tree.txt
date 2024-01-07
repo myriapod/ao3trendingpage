@@ -1,0 +1,14 @@
+ao3trendingpage
+|__init__.py
+ -- 1-data-extraction
+    -- __init__.py
+    -- main.py (needs sqlimport/SQLserver)
+ -- 2-data-analysis
+   -- __init__.py
+    -- main.py (needs sqlimport/SQLserver)
+ -- 3-data-vizualisation
+   -- __init__.py
+    -- main.py (needs 1-data-extraction/Search)
+ -- sqlserver 
+   -- __init__.py
+    -- sqlimport.py

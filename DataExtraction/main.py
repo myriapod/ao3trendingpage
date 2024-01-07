@@ -1,5 +1,5 @@
 from search import Search
-from sqlimport import SQLServer
+from SqlServer.sqlimport import SQLServer
 
 
 fandom_list = []

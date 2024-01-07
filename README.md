@@ -15,8 +15,6 @@ After webscrapping is done, the results are stored in a MariaDB database.
 <h3>Stats table</h3>
 This table is updated every time the python script runs. The work IDs appear several times, with a different timestamp and stats to track the trends. Each entry has an autoincremented ID in this table to falicitate chronologisation.
 
-<b>issue :</b> mariadb.OperationalError: FUNCTION datetime.datetime does not exist. Check the 'Function Name Parsing and Resolution' section in the Reference Manual (str(date) but it didn't help)
-
 <h2>Store the SQL database on AZURE</h2>
 <b>to do</b>
 
