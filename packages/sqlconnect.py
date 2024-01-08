@@ -6,7 +6,8 @@ class SQLAlchemy():
         self.username = dotenv_values("packages/.env")["MDBUSER"]
         self.password = dotenv_values("packages/.env")["MDBPWD"]
         self.database = dotenv_values("packages/.env")["DATABASE"]
-        self.table = dotenv_values("packages/.env")["TABLE"]
+        self.tabledata = dotenv_values("packages/.env")["TABLEDATA"]
+        self.tableid = dotenv_values("packages/.env")["TABLEID"]
         self.host = dotenv_values("packages/.env")["SQLHOST"]
 
     def engine(self):

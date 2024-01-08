@@ -13,5 +13,12 @@ CREATE TABLE stats (
 );
 
 CREATE TABLE workid (
-    workid int PRIMARY KEY
+    workid int PRIMARY KEY,
+    ranking int,
+    commentsDiff int,
+    kudosDiff int,
+    bookmarksDiff int,
+    commentsDiff int,
+    hitsDiff int,
+    keyword varchar(50)
 );

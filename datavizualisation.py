@@ -1,4 +1,4 @@
-from packages.ao3search import Search
+from packages.ao3tosql import Search
 
 data_format = {"authors": "",
                 "categories": "",
