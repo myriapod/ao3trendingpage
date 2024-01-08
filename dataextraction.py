@@ -1,4 +1,4 @@
-from packages.ao3search import Search
+from packages.ao3search import AO3toSQL
 from packages.sqlimport import SQLServer
 
 
@@ -8,11 +8,6 @@ with open(f'packages/fandom_list.txt', 'r') as fl:
         fandom_list.append(line)    
 
 for fandom in fandom_list:
-    search = Search()
+    search = AO3toSQL()
     search.ao3_connect()
-    results = search.ao3_search(fandom=fandom) # a list of dicts
-
-    sqlserver = SQLServer()
-    sqlserver.connection()
-    sqlserver.add(results)
-    sqlserver.disconnection()
+    search.ao3tosql_search(fandom=fandom) # a list of dicts

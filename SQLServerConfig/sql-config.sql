@@ -1,4 +1,4 @@
-CREATE TABLE stats(   
+CREATE TABLE stats (   
     id int auto_increment PRIMARY KEY,
     fandom varchar(250),
     workid int,
@@ -9,4 +9,9 @@ CREATE TABLE stats(
     hits int,
     date_edited date,
     date_published date,
-    date_updated date);
+    date_updated date
+);
+
+CREATE TABLE workid (
+    workid int PRIMARY KEY
+);
