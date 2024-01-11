@@ -17,7 +17,7 @@ for workid in workid_list:
     commentsDiff = dict_res["1"]["comments"]-dict_res["2"]["comments"]
     kudosDiff = dict_res["1"]["kudos"]-dict_res["2"]["kudos"]
     bookmarksDif = dict_res["1"]["bookmarks"]-dict_res["2"]["bookmarks"]
-    commentsDiff = dict_res["1"]["comments"]-dict_res["2"]["comments"]
     hitsDiff = dict_res["1"]["hits"]-dict_res["2"]["hits"]
 
-    insert_id = pd.read_sql(f"INSERT (commentsDiff, kudosDiff, bookmarksDiff, commentsDiff, hitsDiff) INTO {self.tableid} VALUES commentsDiff, kudosDiff, bookmarksDiff, commentsDiff, hitsDiff WHERE workid={workid}", engine)
+    insert_id = pd.read_sql(f"INSERT (commentsDiff, kudosDiff, bookmarksDiff, hitsDiff) INTO {session.tableid} VALUES commentsDiff, kudosDiff, bookmarksDiff, hitsDiff WHERE workid={workid}", engine)
+
