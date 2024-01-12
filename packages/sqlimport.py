@@ -51,6 +51,32 @@ class SQLServer():
                                 FROM {self.tableid}
                                 WHERE workid={entry["id"]})
                             ''')
+        self.conn.commit()
+
+    def get_last_two(self, workid):
+        last_two = []
+        self.cursor.execute(f"SELECT * FROM {self.tabledata} WHERE workid={workid} ORDER BY id DESC LIMIT 2")
+        for entry in self.cursor:
+            last_two.append(entry)
+        return last_two
+        
+    def get_list_workid(self):
+        list_workid = []
+        self.cursor.execute(f"SELECT workid FROM {self.tableid}")
+        for (workid, ) in self.cursor:
+            list_workid.append(workid)
+        return list_workid
+
+    def update_stats(self, workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff):
+        self.cursor.execute(f"UPDATE {self.tableid} SET commentsDiff = {commentsDiff}, kudosDiff = {kudosDiff}, bookmarksDiff = {bookmarksDiff}, hitsDiff = {hitsDiff} WHERE workid={workid}")
+        self.conn.commit()
+
+    def get_top_10(self):
+        top_ten = []
+        self.cursor.execute(f"SELECT * FROM {self.tableid} ORDER BY hitsDiff DESC LIMIT 10")
+        for top in self.cursor:
+            top_ten.append(top)
+        return top_ten
 
     def disconnection(self):
         self.cursor.close()

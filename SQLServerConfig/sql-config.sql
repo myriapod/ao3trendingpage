@@ -22,6 +22,8 @@ CREATE TABLE workid (
     keyword varchar(50)
 );
 
+ALTER TABLE workid ADD COLUMN ranking int, ADD COLUMN commentsDiff int, ADD COLUMN kudosDiff int, ADD COLUMN bookmarksDiff int, ADD COLUMN hitsDiff int, ADD COLUMN keyword varchar(50);
+
 CREATE TABLE ranking (
     workid int PRIMARY KEY,
     ranking int,

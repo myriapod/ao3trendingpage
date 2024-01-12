@@ -1,23 +1,24 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-from sqlalchemy import create_engine
-from packages.sqlconnect import SQLAlchemy
-
-import csv
-
-session = SQLAlchemy()
-engine = session.engine()
+from packages.sqlimport import SQLServer
+from pprint import pp
 
 
-workid_list = list(pd.read_sql(f"SELECT workid FROM {session.tableid}", engine).to_dict()["workid"].values())
+server = SQLServer()
+server.connection()
+list_workid = server.get_list_workid()
 
-for workid in workid_list:
-    dict_res = pd.read_sql(f"SELECT * FROM {session.tabledata} WHERE workid={workid} ORDER BY id DESC LIMIT 2", engine).to_dict()
-    
-    commentsDiff = dict_res["1"]["comments"]-dict_res["2"]["comments"]
-    kudosDiff = dict_res["1"]["kudos"]-dict_res["2"]["kudos"]
-    bookmarksDif = dict_res["1"]["bookmarks"]-dict_res["2"]["bookmarks"]
-    hitsDiff = dict_res["1"]["hits"]-dict_res["2"]["hits"]
+for workid in list_workid:
+    last_two=server.get_last_two(workid)
+    try:
+        commentsDiff = last_two[0][4]-last_two[1][4]
+        kudosDiff = last_two[0][5]-last_two[1][5]
+        bookmarksDiff = last_two[0][6]-last_two[1][6]
+        hitsDiff = last_two[0][7]-last_two[1][7]
+        server.update_stats(workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
+    #print(commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
+    except IndexError as err: # maybe here put the workids in a file or add a tag to the ranking column
+        print(err, f"Error for - {workid} - possible the first entry for the fic")
+        with open("logs.txt", "a") as logs:
+            logs.write(f"Error for - {workid} - possible the first entry for the fic")
 
-    insert_id = pd.read_sql(f"INSERT (commentsDiff, kudosDiff, bookmarksDiff, hitsDiff) INTO {session.tableid} VALUES commentsDiff, kudosDiff, bookmarksDiff, hitsDiff WHERE workid={workid}", engine)
-
+top_ten = server.get_top_10()
+pp(top_ten)

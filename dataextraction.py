@@ -8,5 +8,4 @@ with open(f'packages/fandom_list.txt', 'r') as fl:
 
 for fandom in fandom_list:
     search = AO3toSQL()
-    search.ao3_connect()
     search.ao3tosql_search(fandom=fandom)

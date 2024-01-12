@@ -5,34 +5,23 @@ import time
 from copy import deepcopy
 from re import match
 from .sqlimport import SQLServer
+from .ao3api import AO3API
 
 
 class AO3toSQL():
     def __init__(self):
-        self.statdata={}
-        self.username = dotenv_values("packages/.env")["AO3USER"]
-        self.password = dotenv_values("packages/.env")["AO3PWD"]
-        self.waitingtime = 240
         self.time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.waitingtime = 240
         self.sqlserver = SQLServer()
         self.sqlserver.connection()
-
-    def ao3_connect(self):
-        ratelimit=True
-        while ratelimit:
-            try:
-                session = AO3.Session(self.username, self.password)
-                ratelimit=False
-            except AO3.utils.HTTPError:
-                print("session ratelimit")
-                time.sleep(self.waitingtime)
-        return session
+        AO3session = AO3API()
+        self.ao3session = AO3session.ao3_connect()
 
     def ao3tosql_search(self, fandom):
         ratelimit=True
         while ratelimit:
             try:
-                search = AO3.Search(fandoms=fandom, any_field="hits>100") # add a small filter of only the fics with more than 100 hits to avoid the rate limits
+                search = AO3.Search(fandoms=fandom, any_field="hits>100, crossovers=F") # add a small filter of only the fics with more than 100 hits to avoid the rate limits
                 search.update()
                 ratelimit=False
             except AO3.utils.HTTPError:
