@@ -34,9 +34,9 @@ class SQLServer():
     def add_data(self, entry):
         self.cursor.execute(f'''
                             INSERT INTO {self.tabledata} 
-                            (fandom, workid, timestmp, comments, kudos, bookmarks, hits, date_edited, date_published, date_updated) 
+                            (fandom, workid, timestmp, crossover, comments, kudos, bookmarks, hits, date_edited, date_published, date_updated) 
                             VALUES 
-                            {entry["fandom"], entry["id"], entry["timestmp"], entry["comments"], entry["kudos"], entry["bookmarks"], entry["hits"], entry["date_edited"], entry["date_published"], entry["date_updated"]}
+                            {entry["fandom"], entry["id"], entry["timestmp"], entry["crossover"], entry["comments"], entry["kudos"], entry["bookmarks"], entry["hits"], entry["date_edited"], entry["date_published"], entry["date_updated"]}
                             ''')
         # print(f'added {entry["fandom"]}, {entry["id"]}')
     
@@ -71,9 +71,14 @@ class SQLServer():
         self.cursor.execute(f"UPDATE {self.tableid} SET commentsDiff = {commentsDiff}, kudosDiff = {kudosDiff}, bookmarksDiff = {bookmarksDiff}, hitsDiff = {hitsDiff} WHERE workid={workid}")
         self.conn.commit()
 
-    def get_top_10(self):
+    def get_top_10(self, crossover=False):
         top_ten = []
-        self.cursor.execute(f"SELECT * FROM {self.tableid} ORDER BY hitsDiff DESC LIMIT 10")
+        
+        if crossover:
+            self.cursor.execute(f"SELECT * FROM {self.tableid} ORDER BY hitsDiff DESC LIMIT 10")
+        else:
+            self.cursor.execute(f"SELECT {self.tableid}.* from {self.tableid} order by hitsDiff DESC LIMIT 10 WHERE {self.tableid}.workid in (SELECT {self.tabledata}.workid from {self.tabledata} WHERE {self.tabledata}.crossover=false)")
+            
         for top in self.cursor:
             top_ten.append(top)
         return top_ten

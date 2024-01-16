@@ -16,9 +16,9 @@ for workid in list_workid:
         server.update_stats(workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
     #print(commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
     except IndexError as err: # maybe here put the workids in a file or add a tag to the ranking column
-        print(err, f"Error for - {workid} - possible the first entry for the fic")
+        print(err, f"Error for - {workid} - possibly the first entry for the fic")
         with open("logs.txt", "a") as logs:
-            logs.write(f"Error for - {workid} - possible the first entry for the fic")
+            logs.write(f"Error for - {workid} - possibly the first entry for the fic")
 
-top_ten = server.get_top_10()
+top_ten = server.get_top_10(crossover=False)
 pp(top_ten)

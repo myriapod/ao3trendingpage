@@ -6,6 +6,7 @@ from copy import deepcopy
 from re import match
 from .sqlimport import SQLServer
 from .ao3api import AO3API
+import re
 
 
 class AO3toSQL():
@@ -17,11 +18,11 @@ class AO3toSQL():
         AO3session = AO3API()
         self.ao3session = AO3session.ao3_connect()
 
-    def ao3tosql_search(self, fandom):
+    def ao3tosql_search(self, fandom, refandom):
         ratelimit=True
         while ratelimit:
             try:
-                search = AO3.Search(fandoms=fandom, any_field="hits>100, crossovers=F") # add a small filter of only the fics with more than 100 hits to avoid the rate limits
+                search = AO3.Search(fandoms=fandom, any_field="hits>100") # add a small filter of only the fics with more than 100 hits to avoid the rate limits
                 search.update()
                 ratelimit=False
             except AO3.utils.HTTPError:
@@ -36,6 +37,7 @@ class AO3toSQL():
                 "fandom": fandom,
                 "id": 0,
                 "timestmp": self.time,
+                "crossover": False,
                 "comments": 0,
                 "kudos": 0,
                 "bookmarks": 0,
@@ -58,17 +60,26 @@ class AO3toSQL():
                     time.sleep(self.waitingtime)
 
             for result in search.results: # type: ignore
-                # need to do a deep copy of the template for the dict because
-                # it's possible that not all the keys are in the result keys
-                # for ex: if 0 comments then the key doesn't appear in result
-                statdata = deepcopy(stats_format)
-                for key in statdata.keys():
-                    if key in result.metadata.keys():
-                        if match("date*", key):
-                            statdata[key] = str(result.metadata[key].split(" ")[0])
-                        else:
-                            statdata[key] = result.metadata[key]
 
-                self.sqlserver.add_data(statdata)
-                self.sqlserver.add_id(statdata)
-                print(f'added {fandom} - {statdata["id"]}')
+                # need to check that the fandom name is really in the list of fandoms since there is no NO crossover options on the api
+                if re.match(refandom, ' - '.join(result.metadata["fandoms"])):
+                    
+                    # need to do a deep copy of the template for the dict because
+                    # it's possible that not all the keys are in the result keys
+                    # for ex: if 0 comments then the key doesn't appear in result
+                    statdata = deepcopy(stats_format)
+
+                    # add a way to identify if a fic is crossover in the sql database
+                    if len(result.metadata["fandoms"]) > 1:
+                        statdata["crossover"] = True
+
+                    for key in statdata.keys():
+                        if key in result.metadata.keys():
+                            if match("date*", key):
+                                statdata[key] = str(result.metadata[key].split(" ")[0])
+                            else:
+                                statdata[key] = result.metadata[key]
+
+                    self.sqlserver.add_data(statdata)
+                    self.sqlserver.add_id(statdata)
+                    print(f'added {fandom} - {statdata["id"]}')

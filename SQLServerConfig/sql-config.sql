@@ -3,6 +3,7 @@ CREATE TABLE stats (
     fandom varchar(250),
     workid int,
     timestmp timestamp,
+    crossover bool,
     comments int,
     kudos int,
     bookmarks int,
@@ -23,6 +24,8 @@ CREATE TABLE workid (
 );
 
 ALTER TABLE workid ADD COLUMN ranking int, ADD COLUMN commentsDiff int, ADD COLUMN kudosDiff int, ADD COLUMN bookmarksDiff int, ADD COLUMN hitsDiff int, ADD COLUMN keyword varchar(50);
+
+ALTER TABLE stats ADD COLUMN crossover bool;
 
 CREATE TABLE ranking (
     workid int PRIMARY KEY,
