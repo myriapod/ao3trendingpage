@@ -17,9 +17,8 @@ def main(timestamp):
             server.update_stats(workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
         #print(commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
         except IndexError as err: # maybe here put the workids in a file or add a tag to the ranking column
-            print(err, f"Error for - {workid} - possibly the first entry for the fic")
-            with open("logs.txt", "a") as logs:
-                logs.write(f"Error for - {workid} - possibly the first entry for the fic")
+            with open("packages/logs.txt", "a") as logs:
+                logs.write(f"{timestamp} - Error for - {workid} - possibly the first entry for the fic\n")
 
     top_ten = server.get_top_10(crossover=False) # consider fandom specific top 10
     # only works on ATEEZ for now
