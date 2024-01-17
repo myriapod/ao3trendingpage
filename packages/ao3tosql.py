@@ -1,28 +1,57 @@
 import AO3
 from dotenv import dotenv_values
-from datetime import datetime
 import time
 from copy import deepcopy
 from re import match
-from .sqlimport import SQLServer
-from .ao3api import AO3API
+from .sqlserver import SQLServer 
 import re
 
 
 class AO3toSQL():
-    def __init__(self):
-        self.time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    def __init__(self, timestamp):
+        self.time = timestamp
+        self.username = dotenv_values("packages/.env")["AO3USER"]
+        self.password = dotenv_values("packages/.env")["AO3PWD"]
         self.waitingtime = 240
         self.sqlserver = SQLServer()
         self.sqlserver.connection()
-        AO3session = AO3API()
-        self.ao3session = AO3session.ao3_connect()
-
-    def ao3tosql_search(self, fandom, refandom):
+        # connect to the SQL server
+        
+    def ao3_connect(self):
+        # connect to the ao3 session
         ratelimit=True
         while ratelimit:
             try:
-                search = AO3.Search(fandoms=fandom, any_field="hits>100") # add a small filter of only the fics with more than 100 hits to avoid the rate limits
+                session = AO3.Session(self.username, self.password)
+                ratelimit=False
+            except AO3.utils.HTTPError:
+                print("session ratelimit")
+                time.sleep(self.waitingtime)
+        return session
+    
+
+    def ao3_workid_search(self, workid, session=None):
+        # search a work with the workid - not used
+        ratelimit=True
+        while ratelimit:
+            try:
+                workdata = AO3.Work(workid=workid, session=session, load=True, load_chapters=False).metadata
+                ratelimit = False
+            except AO3.utils.HTTPError:
+                print("session ratelimit")
+                time.sleep(self.waitingtime)
+        return workdata
+
+
+    def ao3tosql_search(self, fandom, refandom, criteria=""):
+        # search every fic for a fandom
+        # fandom = keyword to search on ao3
+        # refandom = regex form
+        # criteria = apply a criteria on the search, like hits>100
+        ratelimit=True
+        while ratelimit:
+            try:
+                search = AO3.Search(fandoms=fandom, any_field=criteria) # add a small filter of only the fics with more than 100 hits to avoid the rate limits
                 search.update()
                 ratelimit=False
             except AO3.utils.HTTPError:
@@ -65,8 +94,6 @@ class AO3toSQL():
                 if re.match(refandom, ' - '.join(result.metadata["fandoms"])):
                     
                     # need to do a deep copy of the template for the dict because
-                    # it's possible that not all the keys are in the result keys
-                    # for ex: if 0 comments then the key doesn't appear in result
                     statdata = deepcopy(stats_format)
 
                     # add a way to identify if a fic is crossover in the sql database
