@@ -1,36 +1,31 @@
 # ao3trendingpage
-Data engineering project that displays a trending page for AO3 fics
+Data engineering personal project that displays a trending page for AO3 fics of a specific fandom.
 
-<h1>Data extraction</h1>
+<h3>Current status</h3>
+- ran one time from extraction to analysis, updating the top10.json file
 
-<h2>AO3 API Python script</h2>
-/data-extraction/main contains the code to connect to the AO3 API and fetch all of the works per fandom researched with a timestamp attached to them.
-The list of fandoms searched can be found at /data-extraction/fandom_list.txt
+<h3>To do</h3>
+- hosting the sql database in the cloud (azure?)
+- connecting with the cloud hosted database
+- docker container + cronjob to run the data extraction once a day (on own raspberry pi server?)
+- web interface
+- data cleanup
 
-After webscrapping is done, the results are stored in a MariaDB database.
+<h1>How to</h1>
 
-<h1>Data storage</h1>
-<h2>MariaDB database structure</h2>
+create a .env file in the packages folder to hold the variables:
+<code>
+AO3USER=
+AO3PWD=
+MDBUSER=
+MDBPWD=
+DATABASE=ao3trendingpage
+TABLEDATA=stats
+TABLEID=workid
+TABLERANK=ranking
+SQLHOST=
+AO3WAITINGTIME=240</code>
 
-<h3>Stats table</h3>
-This table is updated every time the python script runs. The work IDs appear several times, with a different timestamp and stats to track the trends. Each entry has an autoincremented ID in this table to falicitate chronologisation.
+run the <code>main.sh</code> file to get everything working
 
-<h2>Store the SQL database on AZURE</h2>
-<b>to do</b>
-
-<h1>Data analysis</h1>
-
-Group-by every work ID on the stats table
-Compare the last 2 entries for a single work ID
-Store the difference and the work ID
-Get the top 10 biggest differences with the work ID
-
-<h1>Data vizualisation</h1>
-
-- Python script that uses the AO3 API to fetch the metadata from the work IDs in the trending page
-- Q: Could it be in Javascript/Typescript to allow a web interface
-
-<h1>Data cleanup</h1>
-Once a day, remove all the entries from the stats table when the amount of entries for the same fic is bigger than 7 (a week if we're doing it daily), remove the oldest entries.
-
-
+the database is defined in the sql-config.sql file
