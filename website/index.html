@@ -1,13 +1,106 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script type = "text/javascript" src="./ranking.js"></script>
+        <title>AO3 Trending Page</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="homepage.css">
+        <script type = "text/javascript" src="ranking.js"></script>
+        
+        <div>
+            <h1 class="heading" id="heading">
+                <a href="/" class="no-deco-link">
+                    <img class="logo" src="pictures/ao3_logo_42.png" alt="AO3"></img>
+                    <span>Trending Page</span>
+                </a>
+            </h1>
+        </div>
     </head>
 
     <body>
-        <div>
-            <button> </button>
-            <p id="demo"></p>
+        <div  class="body" id="body">
+            <form name="fandom" id="fandom">
+                Fandom: <select name="fandom-choice" id="fandom-choice" class="fandom-choice">
+                    <option value="" selected="selected" class="fandom-selected">Select fandom</option>
+                </select>
+            </form>
+            
+            
+            <div id="to-delete">
+                <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
+            </div>
+
+            <div class="last-update" id="last update">
+                <span>Last update:</span>
+                <span>2024-01-17 14:34:02</span>
+                <button class="refresh-button" onclick=Location.reload()>&#x21bb;</button>
+            </div>
+
+            <a class="toggle-all">Show all</a>
+
+            <div class="gshowhide">
+                <table class="ranking">
+                    <tr>
+                        <td>1</td>
+                        <td>This is a fan fiction title</td>
+                        <td>writer</td>
+                        <td>NEW</td>
+                        <td><button class="show-button" onclick="">v</button></td>
+                    </tr>
+                </table>
+                <div class="entry-info">
+                    this is information about a fic
+                </div>
+            </div>
+            <div class="gshowhide">
+                <table class="ranking">
+                    <tr>
+                        <td>1</td>
+                        <td>This is a fan fiction title</td>
+                        <td>writer</td>
+                        <td>NEW</td>
+                        <td><button class="show-button" onclick="">v</button></td>
+                    </tr>
+                </table>
+                <div class="entry-info">
+                    this is information about a fic
+                </div>
+            </div>
+
+            <div id="button-check"></div>
+
+            <div class="ranking">
+                <table class="ranking" id="ranking">
+                    <tr>
+                        <th>Rank</th>
+                        <th>Work Title</th>
+                        <th>Author</th>
+                        <th>Keyword</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>This is a fan fiction title</td>
+                        <td>writer</td>
+                        <td>NEW</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>This is a fan fiction title</td>
+                        <td>writer</td>
+                        <td>NEW</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>This is a fan fiction title</td>
+                        <td>writer</td>
+                        <td>-2</td>
+                    </tr>
+                </table>
+            </div>
         </div>
+        
     </body>
+
+    <tail class="tail" id="tail">
+        <p id="github">Find the code of this website and project on <a href="https://github.com/myriapod/ao3trendingpage">gitub</a></p>
+    </tail>
 </html>
