@@ -4,7 +4,9 @@
         <title>AO3 Trending Page</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="homepage.css">
-        <script type = "text/javascript" src="ranking.js"></script>
+        <script type="text/javascript" src="ranking.js"></script>
+        <script type="module" src="test.js"></script>
+        <script type="module" src="top10test.json"></script>
         
         <div>
             <h1 class="heading" id="heading">
@@ -18,81 +20,41 @@
 
     <body>
         <div  class="body" id="body">
-            <form name="fandom" id="fandom">
+            <form name="fandom" id="fandom" class="fandom">
                 Fandom: <select name="fandom-choice" id="fandom-choice" class="fandom-choice">
                     <option value="" selected="selected" class="fandom-selected">Select fandom</option>
                 </select>
+
+                <div id="to-delete">
+                    <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
+                </div>
             </form>
             
-            
-            <div id="to-delete">
-                <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
-            </div>
 
             <div class="last-update" id="last update">
                 <span>Last update:</span>
-                <span>2024-01-17 14:34:02</span>
+                <span id="timestamp"></span>
                 <button class="refresh-button" onclick=Location.reload()>&#x21bb;</button>
             </div>
 
-            <a class="toggle-all">Show all</a>
-
-            <div class="gshowhide">
-                <table class="ranking">
-                    <tr>
-                        <td>1</td>
-                        <td>This is a fan fiction title</td>
-                        <td>writer</td>
-                        <td>NEW</td>
-                        <td><button class="show-button" onclick="">v</button></td>
-                    </tr>
-                </table>
-                <div class="entry-info">
-                    this is information about a fic
-                </div>
-            </div>
-            <div class="gshowhide">
-                <table class="ranking">
-                    <tr>
-                        <td>1</td>
-                        <td>This is a fan fiction title</td>
-                        <td>writer</td>
-                        <td>NEW</td>
-                        <td><button class="show-button" onclick="">v</button></td>
-                    </tr>
-                </table>
-                <div class="entry-info">
-                    this is information about a fic
-                </div>
-            </div>
-
-            <div id="button-check"></div>
-
             <div class="ranking">
                 <table class="ranking" id="ranking">
-                    <tr>
+                    <tr id="header">
                         <th>Rank</th>
                         <th>Work Title</th>
                         <th>Author</th>
                         <th>Keyword</th>
                     </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>This is a fan fiction title</td>
-                        <td>writer</td>
-                        <td>NEW</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>This is a fan fiction title</td>
-                        <td>writer</td>
-                        <td>NEW</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>This is a fan fiction title</td>
-                        <td>writer</td>
-                        <td>-2</td>
+                    <tr id="rank-1"></tr>
+                    <tr id="rank-2"></tr>
+                    <tr id="rank-3"></tr>
+                    <tr id="rank-4"></tr>
+                    <tr id="rank-5"></tr>
+                    <tr id="rank-6"></tr>
+                    <tr id="rank-7"></tr>
+                    <tr id="rank-8"></tr>
+                    <tr id="rank-9"></tr>
+                    <tr id="rank-10"></tr>
                     </tr>
                 </table>
             </div>
