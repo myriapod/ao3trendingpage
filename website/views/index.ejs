@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AO3 Trending Page</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="public/styles/style.css" type="text/css"/>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+        
+        
+        <div>
+            <h1 class="heading" id="heading">
+                <a href="/" class="no-deco-link">
+                    <img class="logo" src="public/pictures/ao3_logo_42.png" alt="AO3"></img>
+                    <span>Trending Page</span>
+                </a>
+            </h1>
+        </div>
+    </head>
+
+    <body class="body" id="body">
+        <script src="/home/myri/Documents/coding-projects/ao3trendingpage/website/public/javascript/rank.js" type="text/javascript"></script>
+
+        <form name="fandom" id="fandom" class="fandom">
+            Fandom: <select name="fandom-choice" id="fandom-choice" class="fandom-choice">
+                <option value="" selected="selected" class="fandom-selected">Select fandom</option>
+            </select>
+
+            <div id="to-delete">
+                <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
+            </div>
+        </form>
+
+        
+
+        <div class="last-update" id="last update">
+            <span>Last update:</span>
+            <span id="timestamp"></span>
+            <button class="refresh-button" onclick="">&#x21bb;</button>
+        </div>
+
+        <div class="ranking">
+            <table class="ranking" id="ranking">
+                <thead id="header">
+                    <th>Rank</th>
+                    <th>Work Title</th>
+                    <th>Author</th>
+                    <th>Keyword</th>
+                </thead>
+
+                <tbody id="ranking-body">
+                    <script><%= document.write(data[0]) %></script>
+                </tbody>
+            </table>
+        </div>
+
+    
+    
+        
+    </body>
+    
+
+    <tail class="tail" id="tail">
+        <p id="github">Find the code of this website and project on <a href="https://github.com/myriapod/ao3trendingpage">gitub</a></p>
+    </tail>
+</html>
