@@ -3,17 +3,17 @@ from dotenv import dotenv_values
 import time
 from copy import deepcopy
 from re import match
-from .sqlserver import SQLServer 
+from sqlserver import SQLServer 
 import re
 
 
 class AO3toSQL():
-    def __init__(self, timestamp):
+    def __init__(self, timestamp, manual_env=None):
         self.time = timestamp
-        self.username = dotenv_values("packages/.env")["AO3USER"]
-        self.password = dotenv_values("packages/.env")["AO3PWD"]
+        self.username = dotenv_values(".env")["AO3USER"]
+        self.password = dotenv_values(".env")["AO3PWD"]
         self.waitingtime = 240
-        self.sqlserver = SQLServer()
+        self.sqlserver = SQLServer(manual_env=manual_env)
         self.sqlserver.connection()
         # connect to the SQL server
         
@@ -110,3 +110,37 @@ class AO3toSQL():
                     self.sqlserver.add_data(statdata)
                     self.sqlserver.add_id(statdata)
                     print(f'added {fandom} - {statdata["id"]}')
+
+    def metadata_ranking(self):
+        data = self.sqlserver.get_ranking_for_metadata()
+
+        for entry in data:
+            meta = self.ao3_workid_search(data[entry]["workid"])
+            data[entry]["worktitle"] = meta["title"]
+            data[entry]["authors"] = ' & '.join(meta["authors"])
+
+            if meta["categories"]:
+                data[entry]["relationship"] = meta["relationships"][0]
+            else: 
+                data[entry]["relationship"] = "N/A"
+
+            if meta["expected_chapters"] == None:
+                data[entry]["chapters"] = f'{meta["nchapters"]}/?'
+            else:
+                data[entry]["chapters"] = f'{meta["nchapters"]}/{meta["expected_chapters"]}'
+
+            data[entry]["latest_updated"] = max(meta["date_updated"], meta["date_published"], meta["date_edited"]).split(" ")[0]
+
+            if meta["categories"]:
+                data[entry]["categories"] = ', '.join(meta["categories"])
+            else:
+                data[entry]["categories"] = "N/A"
+            
+            if len(meta["tags"])>=4:
+                data[entry]["tags"] = ', '.join(meta["tags"][:4])
+            else:
+                data[entry]["tags"] = ', '.join(meta["tags"])
+            
+            data[entry]["words"] = meta["words"]
+
+        return data

@@ -1,0 +1,96 @@
+/* tail github */
+.tail {
+    position: fixed;
+    font-size: 10px;
+    bottom: 0%;
+    text-align: center;
+    width: 100%;
+ }
+ 
+ /* AO3 trending page title */
+ .heading {
+    text-align: center;
+    font-weight: inherit;
+    font-style: inherit;
+ }
+ /* AO3 logo */
+ .logo {
+    vertical-align: middle;
+ }
+ /* no link decorations*/
+ .no-deco-link {
+    color: black;
+    text-decoration-line: none;
+ }
+ 
+ /* body */
+ .body {
+     margin-left: 15%;
+     margin-right: 15%;
+     margin-top: 5%;
+     margin-bottom: 5%;
+ }
+ 
+ .fandom {
+     display: none;
+ } 
+ 
+ .fandom-choice {
+     color: black;
+     background-color: white;
+     font-size: 16px;
+     padding: 5px;
+     border-radius: 20px;
+     text-align: center;
+ }
+ 
+ /* to do */
+ .fandom-list{
+     border-radius: 20px;
+ }
+ 
+ .fandom-selected {
+     color: black;
+     background-color: lightgray;
+ }
+ 
+ .last-update {
+     font-size: 13px;
+     text-align: right;
+ }
+ 
+ .refresh-button {
+     border: None;
+     background-color: white;
+     padding: 0px;
+     vertical-align: middle;
+     display: none;
+ }
+ 
+ .ranking table {
+     margin-top: 10%;
+     /* border: 1px solid; */
+     width: 100%;
+     text-align: center;
+     border-collapse: collapse;
+ }
+ 
+ .ranking th {
+     color: #980404;
+ }
+ 
+ .ranking tr {
+     border-bottom: 1px solid black;
+ }
+ 
+ .ranking tr td a {
+     display: block;
+     width: 100%;
+     height: 100%;
+     color: black;
+     text-decoration: none;
+}
+
+.additional-info {
+    font-size: 12px;
+}

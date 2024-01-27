@@ -28,5 +28,13 @@ CREATE TABLE ranking (
     fandom varchar(50),
     ranking int,
     timestmp timestamp,
-    keyword varchar(50)
+    keyword varchar(50),
+    worktitle varchar(250),
+    authors varchar(250),
+    relationship varchar(250),
+    chapters varchar(250),
+    latest_updated varchar(250),
+    categories varchar(250),
+    tags varchar(250),
+    words int
 );

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>AO3 Trending Page</title>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}" type="text/css"/>
+
+        <div>
+            <h1 class="heading" id="heading">
+                <a href="/" class="no-deco-link">
+                    <img class="logo" src="{{ url_for('static', filename= 'pictures/ao3logo.png') }}" alt="AO3"></img>
+                    <span>(Ateez) Trending Page</span>
+                </a>
+            </h1>
+        </div>
+    </head>
+
+    <body class="body" id="body">
+
+        <form name="fandom" id="fandom" class="fandom">
+            Fandom: <select name="fandom-choice" id="fandom-choice" class="fandom-choice">
+                <option value="" selected="selected" class="fandom-selected">Select fandom</option>
+            </select>
+
+            <div id="to-delete">
+                <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
+            </div>
+        </form>
+
+        
+
+        <div class="last-update" id="last update">
+            <span>Last update:</span>
+            <span id="timestamp"></span>
+            <button class="refresh-button" onclick="">&#x21bb;</button>
+        </div>
+
+        
+        <div class="ranking">
+            <table class="ranking" id="ranking">
+                <thead id="header">
+                    <th>Rank</th>
+                    <th>Keyword</th>
+                    <th>Work Title</th>
+                    <th>Author</th>
+                </thead>
+
+                <tbody id="ranking-body">
+                    {% block content %}
+                    {% for entry in ranking %}
+                        <tr><td><a href={{ entry["link"] }}>{{ entry["ranking"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["keyword"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["worktitle"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["authors"] }}</a></td>
+                        </tr>
+                        <tr class="additional-info">
+                            <td></td>
+                            <td></td>
+                            <td>cat: {{ entry["categories"] }} </br> main relationship: {{ entry["relationship"] }} </br> tags: {{ entry["tags"] }}</td>
+                            <td>words: {{ entry["words"] }} </br> chapters: {{ entry["chapters"] }} </br> last update: {{ entry["latest_updated"] }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    {{ metadata }}
+                    {% endblock %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+    
+
+    <tail class="tail" id="tail">
+        <p id="github">Find the code of this website and project on <a href="https://github.com/myriapod/ao3trendingpage">github</a></p>
+    </tail>
+</html>
