@@ -16,13 +16,13 @@ class SQLServer():
             self.tableid = manual_env[5]
             self.tablerank = manual_env[6]
         else:
-            self.username = dotenv_values("packages/.env")["MDBUSER"]
-            self.password = dotenv_values("packages/.env")["MDBPWD"]
-            self.host = dotenv_values("packages/.env")["SQLHOST"]
-            self.database = dotenv_values("packages/.env")["DATABASE"]
-            self.tabledata = dotenv_values("packages/.env")["TABLEDATA"]
-            self.tableid = dotenv_values("packages/.env")["TABLEID"]
-            self.tablerank = dotenv_values("packages/.env")["TABLERANK"]
+            self.username = dotenv_values(".env")["MDBUSER"]
+            self.password = dotenv_values(".env")["MDBPWD"]
+            self.host = dotenv_values(".env")["SQLHOST"]
+            self.database = dotenv_values(".env")["DATABASE"]
+            self.tabledata = dotenv_values(".env")["TABLEDATA"]
+            self.tableid = dotenv_values(".env")["TABLEID"]
+            self.tablerank = dotenv_values(".env")["TABLERANK"]
         self.cursor = None
         self.conn = None
 
@@ -116,21 +116,51 @@ class SQLServer():
             self.conn.commit()
         self.conn.commit()
 
-    def get_ranking(self):        
+    def update_metadata(self, data):
+        for entry in data:
+            self.cursor.execute(f'''
+                                UPDATE {self.tablerank} SET 
+                                worktitle="{data[entry]["worktitle"]}",
+                                authors="{data[entry]["authors"]}",
+                                relationship="{data[entry]["relationship"]}",
+                                chapters="{data[entry]["chapters"]}",
+                                latest_updated="{data[entry]["latest_updated"]}",
+                                categories="{data[entry]["categories"]}",
+                                tags="{data[entry]["tags"]}",
+                                words={data[entry]["words"]}
+                                WHERE workid={data[entry]["workid"]}
+                                ''')
+            self.conn.commit()
+
+    def get_ranking_for_metadata(self):        
         data = {}
         self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE ranking IS NOT NULL ORDER BY ranking ASC")
         for rank in self.cursor:
             data[rank[2]] = {}
-            data[rank[2]]["rank"] = rank[2]
-            data[rank[2]]["link"] = f"https://archiveofourown.org/works/{rank[0]}"
             data[rank[2]]["workid"] = rank[0]
-            data[rank[2]]["worktitle"] = rank[0]
-            data[rank[2]]["author"] = rank[0]
-            data[rank[2]]["keyword"] = rank[-1]
         # print(data)
         return data
 
-    def json_dump(self, jsfile: str):
+    def get_ranking_for_html(self):
+        data = []
+        self.cursor.execute(f"SHOW COLUMNS FROM {self.tablerank}")
+        header = self.cursor.fetchall()
+
+        self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE ranking IS NOT NULL ORDER BY ranking ASC")
+        rows = self.cursor.fetchall()
+        
+        for t in rows:
+            dic = {}
+            for r in range(0, len(t)):
+                dic[header[r][0]] = t[r]
+            dic["link"] = f'https://archiveofourown.org/works/{dic["workid"]}'
+            data.append(dic)
+
+        print(data)
+        # print(data)
+        return data
+
+    def json_dump(self, jsfile: str): # not used
         keys=[]
         self.cursor.execute(f"SHOW COLUMNS FROM {self.tablerank}")
         for e in self.cursor:

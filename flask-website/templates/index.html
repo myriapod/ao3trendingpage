@@ -48,16 +48,16 @@
                 <tbody id="ranking-body">
                     {% block content %}
                     {% for entry in ranking %}
-                        <tr><td><a href={{ ranking[entry]["link"] }}>{{ ranking[entry]["rank"] }}</a></td>
-                        <td><a href={{ ranking[entry]["link"] }}>{{ ranking[entry]["keyword"] }}</a></td>
-                        <td><a href={{ ranking[entry]["link"] }}>{{ ranking[entry]["worktitle"] }}</a></td>
-                        <td><a href={{ ranking[entry]["link"] }}>{{ ranking[entry]["author"] }}</a></td>
+                        <tr><td><a href={{ entry["link"] }}>{{ entry["ranking"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["keyword"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["worktitle"] }}</a></td>
+                        <td><a href={{ entry["link"] }}>{{ entry["authors"] }}</a></td>
                         </tr>
                         <tr class="additional-info">
                             <td></td>
                             <td></td>
-                            <td>cat: {{ ranking[entry]["categories"] }} </br> main relationship: {{ ranking[entry]["relationship"] }} </br> tags: {{ ranking[entry]["tags"] }}</td>
-                            <td>words: {{ ranking[entry]["words"] }} </br> chapters: {{ ranking[entry]["chapters"] }} </br> last update: {{ ranking[entry]["latest_updated"] }}
+                            <td>cat: {{ entry["categories"] }} </br> main relationship: {{ entry["relationship"] }} </br> tags: {{ entry["tags"] }}</td>
+                            <td>words: {{ entry["words"] }} </br> chapters: {{ entry["chapters"] }} </br> last update: {{ entry["latest_updated"] }}
                             </td>
                         </tr>
                     {% endfor %}

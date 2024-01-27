@@ -4,5 +4,5 @@ python3 dataextraction.py $timestamp
 echo "Done with data extraction"
 python3 dataanalysis.py $timestamp
 echo "Done with data analysis"
-# python3 datavizualisation.py $timestamp
-# echo "Done with data vizualisation"
+python3 datavizualisation.py $timestamp
+echo "Done with data vizualisation"
