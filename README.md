@@ -29,3 +29,7 @@ AO3WAITINGTIME=240</code>
 run the <code>main.sh</code> file to get everything working
 
 the database is defined in the sql-config.sql file
+
+
+<h1>To do:</h1>
+rework the ranking database so that it can store metadata about the top 10 (only)

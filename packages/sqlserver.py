@@ -3,16 +3,26 @@ import mariadb
 import sys
 from dotenv import dotenv_values
 import json
+import AO3
 
 class SQLServer():
-    def __init__(self):
-        self.username = dotenv_values("packages/.env")["MDBUSER"]
-        self.password = dotenv_values("packages/.env")["MDBPWD"]
-        self.host = dotenv_values("packages/.env")["SQLHOST"]
-        self.database = dotenv_values("packages/.env")["DATABASE"]
-        self.tabledata = dotenv_values("packages/.env")["TABLEDATA"]
-        self.tableid = dotenv_values("packages/.env")["TABLEID"]
-        self.tablerank = dotenv_values("packages/.env")["TABLERANK"]
+    def __init__(self, manual_env=None):
+        if manual_env:
+            self.username = manual_env[0]
+            self.password = manual_env[1]
+            self.host = manual_env[2]
+            self.database = manual_env[3]
+            self.tabledata = manual_env[4]
+            self.tableid = manual_env[5]
+            self.tablerank = manual_env[6]
+        else:
+            self.username = dotenv_values("packages/.env")["MDBUSER"]
+            self.password = dotenv_values("packages/.env")["MDBPWD"]
+            self.host = dotenv_values("packages/.env")["SQLHOST"]
+            self.database = dotenv_values("packages/.env")["DATABASE"]
+            self.tabledata = dotenv_values("packages/.env")["TABLEDATA"]
+            self.tableid = dotenv_values("packages/.env")["TABLEID"]
+            self.tablerank = dotenv_values("packages/.env")["TABLERANK"]
         self.cursor = None
         self.conn = None
 
@@ -105,6 +115,20 @@ class SQLServer():
             self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword='NEW' WHERE workid={workid}")
             self.conn.commit()
         self.conn.commit()
+
+    def get_ranking(self):        
+        data = {}
+        self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE ranking IS NOT NULL ORDER BY ranking ASC")
+        for rank in self.cursor:
+            data[rank[2]] = {}
+            data[rank[2]]["rank"] = rank[2]
+            data[rank[2]]["link"] = f"https://archiveofourown.org/works/{rank[0]}"
+            data[rank[2]]["workid"] = rank[0]
+            data[rank[2]]["worktitle"] = rank[0]
+            data[rank[2]]["author"] = rank[0]
+            data[rank[2]]["keyword"] = rank[-1]
+        # print(data)
+        return data
 
     def json_dump(self, jsfile: str):
         keys=[]

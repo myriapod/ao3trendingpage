@@ -3,17 +3,19 @@ from dotenv import dotenv_values
 import time
 from copy import deepcopy
 from re import match
-from .sqlserver import SQLServer 
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'packages'))
+from sqlserver import SQLServer 
 import re
 
 
 class AO3toSQL():
-    def __init__(self, timestamp):
+    def __init__(self, timestamp, manual_env=None):
         self.time = timestamp
-        self.username = dotenv_values("packages/.env")["AO3USER"]
-        self.password = dotenv_values("packages/.env")["AO3PWD"]
+        self.username = dotenv_values(".env")["AO3USER"]
+        self.password = dotenv_values(".env")["AO3PWD"]
         self.waitingtime = 240
-        self.sqlserver = SQLServer()
+        self.sqlserver = SQLServer(manual_env=manual_env)
         self.sqlserver.connection()
         # connect to the SQL server
         
@@ -110,3 +112,22 @@ class AO3toSQL():
                     self.sqlserver.add_data(statdata)
                     self.sqlserver.add_id(statdata)
                     print(f'added {fandom} - {statdata["id"]}')
+
+    def metadata_ranking(self):
+        data = self.sqlserver.get_ranking()
+
+        for entry in data:
+            meta = self.ao3_workid_search(data[entry]["workid"])
+            data[entry]["worktitle"] = meta["title"]
+            data[entry]["author"] = ' & '.join(meta["authors"])
+            data[entry]["relationship"] = meta["relationships"][0]
+            if meta["expected_chapters"] == None:
+                data[entry]["chapters"] = f'{meta["nchapters"]}/?'
+            else:
+                data[entry]["chapters"] = f'{meta["nchapters"]}/{meta["expected_chapters"]}'
+            data[entry]["latest_updated"] = meta["date_updated"].split(" ")[0]
+            data[entry]["categories"] = ', '.join(meta["categories"])
+            data[entry]["tags"] = ', '.join(meta["tags"][:4])
+            data[entry]["words"] = meta["words"]
+
+        return data
