@@ -1,5 +1,4 @@
 from flask import Flask, render_template
-from ao3workfetch import ao3workfetch
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(sys.path[0]), 'packages'))
 from ao3tosql import AO3toSQL
