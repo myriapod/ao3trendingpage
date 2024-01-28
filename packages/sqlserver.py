@@ -1,28 +1,35 @@
 # Module Imports
 import mariadb
 import sys
-from dotenv import dotenv_values
 import json
-import AO3
+import os
+from dotenv import load_dotenv
+from os.path import join, dirname
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 class SQLServer():
-    def __init__(self, manual_env=None):
-        if manual_env:
-            self.username = manual_env["MDBUSER"]
-            self.password = manual_env["MDBPWD"]
-            self.host = manual_env["SQLHOST"]
-            self.database = manual_env["DATABASE"]
-            self.tabledata = manual_env["TABLEDATA"]
-            self.tableid = manual_env["TABLEID"]
-            self.tablerank = manual_env["TABLERANK"]
-        else:
-            self.username = dotenv_values(".env")["MDBUSER"]
-            self.password = dotenv_values(".env")["MDBPWD"]
-            self.host = dotenv_values(".env")["SQLHOST"]
-            self.database = dotenv_values(".env")["DATABASE"]
-            self.tabledata = dotenv_values(".env")["TABLEDATA"]
-            self.tableid = dotenv_values(".env")["TABLEID"]
-            self.tablerank = dotenv_values(".env")["TABLERANK"]
+    def __init__(self):
+        manual_env={
+            "MDBUSER": os.environ.get('MDBUSER'),
+            "MDBPWD": os.environ.get('MDBPWD'),
+            "DATABASE": os.environ.get('DATABASE'),
+            "TABLEDATA": os.environ.get('TABLEDATA'),
+            "TABLEID": os.environ.get('TABLEID'),
+            "TABLERANK": os.environ.get('TABLERANK'),
+            "SQLHOST": os.environ.get('SQLHOST'),
+            "AO3USER": os.environ.get('AO3USER'),
+            "AO3PWD": os.environ.get('AO3PWD'),
+            "AO3WAITINGTIME": os.environ.get('AO3WAITINGTIME')
+            }
+        self.username = manual_env["MDBUSER"]
+        self.password = manual_env["MDBPWD"]
+        self.host = manual_env["SQLHOST"]
+        self.database = manual_env["DATABASE"]
+        self.tabledata = manual_env["TABLEDATA"]
+        self.tableid = manual_env["TABLEID"]
+        self.tablerank = manual_env["TABLERANK"]
         self.cursor = None
         self.conn = None
 
@@ -93,27 +100,39 @@ class SQLServer():
         return top_ten
     
     def update_ranking(self, workid, fandom_name, rank, timestamp):
+
         # if the work is already in the ranking
-        self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
-        if len(self.cursor.fetchall())!=0:
-            self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
-            for e in self.cursor:
-                rankDiff = str(e[2] - rank)
-                self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword={rankDiff}, timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
-                self.conn.commit()
-                self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword={rankDiff} WHERE workid={workid}")
-                self.conn.commit()
-                break
-        # add an elif for the HOT label when it's not new but going strong
-        else: # new workid in the ranking table
+        self.cursor.execute(f"SELECT ranking FROM {self.tableid} WHERE workid={workid}")
+        old_rank = [e[0] for e in self.cursor]
+
+        if old_rank[0] == None : # new workid in the ranking table
             # self.cursor.execute(f"SElECT * FROM {self.tabledata} WHERE workid={workid} HAVING COUNT(*)=2") 
-            print("no work: ")
-            self.cursor.execute(f"UPDATE {self.tablerank} SET ranking=NULL WHERE timestmp<>'{timestamp}'") # set the rank to 0 to the fics that have left the ranking
-            self.conn.commit()
             self.cursor.execute(f'''INSERT INTO {self.tablerank} (workid, fandom, ranking, timestmp, keyword) VALUES ({workid}, "{fandom_name}", {rank}, "{timestamp}", "NEW")''')
             self.conn.commit()
             self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword='NEW' WHERE workid={workid}")
             self.conn.commit()
+
+        else:
+            self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
+            for e in self.cursor:
+                rankDiff = int(old_rank[0] - rank)
+
+                if rankDiff==0:
+                    self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword="=", timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
+                    self.conn.commit()
+                    self.cursor.execute(f'''UPDATE {self.tableid} SET ranking={rank}, keyword="=" WHERE workid={workid}''')
+                    self.conn.commit()
+                else:
+                    self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword={str(rankDiff)} WHERE workid={workid}")
+                    self.conn.commit()
+                    self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword={str(rankDiff)}, timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
+                    self.conn.commit()
+                break
+        # add an elif for the HOT label when it's not new but going strong
+    
+    def update_out_of_ranking(self, timestamp):
+        self.cursor.execute(f"UPDATE {self.tablerank} SET ranking=NULL WHERE timestmp<>'{timestamp}'") # set the rank to 0 to the fics that have left the ranking
+
         self.conn.commit()
 
     def update_metadata(self, data):
@@ -126,6 +145,7 @@ class SQLServer():
                                 chapters="{data[entry]["chapters"]}",
                                 latest_updated="{data[entry]["latest_updated"]}",
                                 categories="{data[entry]["categories"]}",
+                                rating="{data[entry]["rating"]}",
                                 tags="{data[entry]["tags"]}",
                                 words={data[entry]["words"]}
                                 WHERE workid={data[entry]["workid"]}
@@ -156,8 +176,6 @@ class SQLServer():
             dic["link"] = f'https://archiveofourown.org/works/{dic["workid"]}'
             data.append(dic)
 
-        print(data)
-        # print(data)
         return data
 
     def json_dump(self, jsfile: str): # not used

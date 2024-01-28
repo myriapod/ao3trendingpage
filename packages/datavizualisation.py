@@ -1,6 +1,6 @@
-from packages.ao3tosql import AO3toSQL
-from pprint import pp
+from ao3tosql import AO3toSQL
 import sys
+
 
 def main(timestamp):
     ao3 = AO3toSQL(timestamp=timestamp)

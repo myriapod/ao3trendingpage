@@ -1,10 +1,8 @@
 /* tail github */
 .tail {
-    position: fixed;
-    font-size: 10px;
-    bottom: 0%;
+    position: relative;
+    font-size: 12px;
     text-align: center;
-    width: 100%;
  }
  
  /* AO3 trending page title */
@@ -68,14 +66,14 @@
  }
  
  .ranking table {
-     margin-top: 10%;
+     /* margin-top: 10%; */
      /* border: 1px solid; */
      width: 100%;
      text-align: center;
      border-collapse: collapse;
  }
  
- .ranking th {
+ .ranking thead {
      color: #980404;
  }
  
@@ -93,4 +91,33 @@
 
 .additional-info {
     font-size: 12px;
+    margin: 0%;
+}
+
+.additional-right {
+    margin: 0%;
+}
+
+.additional-right tr {
+    border-bottom: none;
+}
+
+.additional-right-left {
+    text-align: right;
+    font-weight: bold;
+}
+.additional-right-right {
+    text-align: left;
+}
+
+.additional-left {
+    margin: 0%;
+}
+
+.additional-left tr {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    border-bottom: none;
 }

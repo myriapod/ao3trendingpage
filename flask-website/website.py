@@ -9,16 +9,25 @@ app.config.from_pyfile('settings.py')
 @app.route('/')
 def index():
     # the manual_env kind of sucks, it's a working work around but it's not very pretty
-    manual_env={"MDBUSER": app.config["MDBUSER"], 
-                "MDBPWD" : app.config["MDBPWD"], 
-                "SQLHOST": app.config["SQLHOST"], 
-                "DATABASE": app.config["DATABASE"], 
-                "TABLEDATA": app.config["TABLEDATA"], 
-                "TABLEID": app.config["TABLEID"], 
-                "TABLERANK": app.config["TABLERANK"],
-                "AO3USER": app.config["AO3USER"],
-                "AO3PWD": app.config["AO3PWD"]}
-    ao3 = AO3toSQL(timestamp="", manual_env=manual_env) # no need for the timestamp at this stage
+    timestamp=app.config["AO3TIMESTAMP"]
+    ao3 = AO3toSQL(timestamp=timestamp) # no need for the timestamp at this stage
     data = ao3.sqlserver.get_ranking_for_html()
 
-    return render_template('index.html', ranking=data)
+    category_table = {
+        "M/M": "slash",
+        "F/M": "het",
+        "F/F": "femslash",
+        "Multi": "multi",
+        "Other": "other",
+        "N/A": "none",
+        "Gen": "gen"
+    }
+    rating_table = {
+        "Mature": "mature",
+        "Not Rated": "notrated",
+        "Explicit": "explicit",
+        "Teen": "teen",
+        "General Audiences": "general-audience"
+    }
+
+    return render_template('index.html', ranking=data, timestamp=timestamp, category_table=category_table, rating_table=rating_table)

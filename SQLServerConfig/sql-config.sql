@@ -35,6 +35,7 @@ CREATE TABLE ranking (
     chapters varchar(250),
     latest_updated varchar(250),
     categories varchar(250),
+    rating varchar(250),
     tags varchar(250),
     words int
 );
