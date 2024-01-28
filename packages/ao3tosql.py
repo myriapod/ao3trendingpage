@@ -10,8 +10,12 @@ import re
 class AO3toSQL():
     def __init__(self, timestamp, manual_env=None):
         self.time = timestamp
-        self.username = dotenv_values(".env")["AO3USER"]
-        self.password = dotenv_values(".env")["AO3PWD"]
+        if manual_env:
+            self.username = manual_env["AO3USER"]
+            self.password = manual_env["AO3PWD"]
+        else:
+            self.username = dotenv_values(".env")["AO3USER"]
+            self.password = dotenv_values(".env")["AO3PWD"]
         self.waitingtime = 240
         self.sqlserver = SQLServer(manual_env=manual_env)
         self.sqlserver.connection()

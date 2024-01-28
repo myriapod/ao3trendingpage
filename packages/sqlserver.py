@@ -8,13 +8,13 @@ import AO3
 class SQLServer():
     def __init__(self, manual_env=None):
         if manual_env:
-            self.username = manual_env[0]
-            self.password = manual_env[1]
-            self.host = manual_env[2]
-            self.database = manual_env[3]
-            self.tabledata = manual_env[4]
-            self.tableid = manual_env[5]
-            self.tablerank = manual_env[6]
+            self.username = manual_env["MDBUSER"]
+            self.password = manual_env["MDBPWD"]
+            self.host = manual_env["SQLHOST"]
+            self.database = manual_env["DATABASE"]
+            self.tabledata = manual_env["TABLEDATA"]
+            self.tableid = manual_env["TABLEID"]
+            self.tablerank = manual_env["TABLERANK"]
         else:
             self.username = dotenv_values(".env")["MDBUSER"]
             self.password = dotenv_values(".env")["MDBPWD"]
