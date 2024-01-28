@@ -1,28 +1,35 @@
 # Module Imports
 import mariadb
 import sys
-from dotenv import dotenv_values
 import json
-import AO3
+import os
+from dotenv import load_dotenv
+from os.path import join, dirname
+
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 class SQLServer():
-    def __init__(self, manual_env=None):
-        if manual_env:
-            self.username = manual_env["MDBUSER"]
-            self.password = manual_env["MDBPWD"]
-            self.host = manual_env["SQLHOST"]
-            self.database = manual_env["DATABASE"]
-            self.tabledata = manual_env["TABLEDATA"]
-            self.tableid = manual_env["TABLEID"]
-            self.tablerank = manual_env["TABLERANK"]
-        else:
-            self.username = dotenv_values(".env")["MDBUSER"]
-            self.password = dotenv_values(".env")["MDBPWD"]
-            self.host = dotenv_values(".env")["SQLHOST"]
-            self.database = dotenv_values(".env")["DATABASE"]
-            self.tabledata = dotenv_values(".env")["TABLEDATA"]
-            self.tableid = dotenv_values(".env")["TABLEID"]
-            self.tablerank = dotenv_values(".env")["TABLERANK"]
+    def __init__(self):
+        manual_env={
+            "MDBUSER": os.environ.get('MDBUSER'),
+            "MDBPWD": os.environ.get('MDBPWD'),
+            "DATABASE": os.environ.get('DATABASE'),
+            "TABLEDATA": os.environ.get('TABLEDATA'),
+            "TABLEID": os.environ.get('TABLEID'),
+            "TABLERANK": os.environ.get('TABLERANK'),
+            "SQLHOST": os.environ.get('SQLHOST'),
+            "AO3USER": os.environ.get('AO3USER'),
+            "AO3PWD": os.environ.get('AO3PWD'),
+            "AO3WAITINGTIME": os.environ.get('AO3WAITINGTIME')
+            }
+        self.username = manual_env["MDBUSER"]
+        self.password = manual_env["MDBPWD"]
+        self.host = manual_env["SQLHOST"]
+        self.database = manual_env["DATABASE"]
+        self.tabledata = manual_env["TABLEDATA"]
+        self.tableid = manual_env["TABLEID"]
+        self.tablerank = manual_env["TABLERANK"]
         self.cursor = None
         self.conn = None
 
@@ -126,6 +133,7 @@ class SQLServer():
                                 chapters="{data[entry]["chapters"]}",
                                 latest_updated="{data[entry]["latest_updated"]}",
                                 categories="{data[entry]["categories"]}",
+                                rating="{data[entry]["rating"]}",
                                 tags="{data[entry]["tags"]}",
                                 words={data[entry]["words"]}
                                 WHERE workid={data[entry]["workid"]}
@@ -156,8 +164,6 @@ class SQLServer():
             dic["link"] = f'https://archiveofourown.org/works/{dic["workid"]}'
             data.append(dic)
 
-        print(data)
-        # print(data)
         return data
 
     def json_dump(self, jsfile: str): # not used

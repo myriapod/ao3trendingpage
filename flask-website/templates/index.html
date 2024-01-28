@@ -8,7 +8,7 @@
         <div>
             <h1 class="heading" id="heading">
                 <a href="/" class="no-deco-link">
-                    <img class="logo" src="{{ url_for('static', filename= 'pictures/ao3logo.png') }}" alt="AO3"></img>
+                    <img class="logo" src="https://archiveofourown.org/images/ao3_logos/logo_42.png" alt="AO3"></img>
                     <span>(Ateez) Trending Page</span>
                 </a>
             </h1>
@@ -31,16 +31,15 @@
 
         <div class="last-update" id="last update">
             <span>Last update:</span>
-            <span id="timestamp"></span>
+            <span id="timestamp">{{ timestamp }}</span>
             <button class="refresh-button" onclick="">&#x21bb;</button>
         </div>
 
         
         <div class="ranking">
             <table class="ranking" id="ranking">
-                <thead id="header">
-                    <th>Rank</th>
-                    <th>Keyword</th>
+                <thead>
+                    <th colspan="2">Rank</th>
                     <th>Work Title</th>
                     <th>Author</th>
                 </thead>
@@ -48,7 +47,8 @@
                 <tbody id="ranking-body">
                     {% block content %}
                     {% for entry in ranking %}
-                        <tr><td><a href={{ entry["link"] }}>{{ entry["ranking"] }}</a></td>
+                        <tr>
+                        <td><a href={{ entry["link"] }}>{{ entry["ranking"] }}</a></td>
                         <td><a href={{ entry["link"] }}>{{ entry["keyword"] }}</a></td>
                         <td><a href={{ entry["link"] }}>{{ entry["worktitle"] }}</a></td>
                         <td><a href={{ entry["link"] }}>{{ entry["authors"] }}</a></td>
@@ -56,21 +56,42 @@
                         <tr class="additional-info">
                             <td></td>
                             <td></td>
-                            <td>cat: {{ entry["categories"] }} </br> main relationship: {{ entry["relationship"] }} </br> tags: {{ entry["tags"] }}</td>
-                            <td>words: {{ entry["words"] }} </br> chapters: {{ entry["chapters"] }} </br> last update: {{ entry["latest_updated"] }}
+                            <td>
+                                <table class="additional-left">
+                                    <tr colspan=2><td><img src="https://archiveofourown.org/images/skins/iconsets/default/category-{{ category_table[entry["categories"]] }}.png"></img><img src="https://archiveofourown.org/images/skins/iconsets/default/rating-{{ rating_table[entry["rating"]] }}.png"></img></td>
+                                    </tr>
+                                    <tr><td>{{ entry["relationship"] }}</td></tr>
+                                    <tr><td><b>Main tags: </b>{{ entry["tags"] }}</td></tr>
+                                </table>
+                            <td>
+                                <table class="additional-right">
+                                    <tr><td class="additional-right-left">words:</td>
+                                        <td class="additional-right-right">{{ entry["words"] }}</td></tr>
+                                    <tr>
+                                        <td class="additional-right-left">chapters:</td>
+                                        <td class="additional-right-right">{{ entry["chapters"] }}</td></tr>
+                                    <tr>
+                                        <td class="additional-right-left">last update:</td>
+                                        <td class="additional-right-right">{{ entry["latest_updated"] }}</td></tr>
+                                </table>
                             </td>
                         </tr>
                     {% endfor %}
 
                     {{ metadata }}
+
                     {% endblock %}
                 </tbody>
             </table>
         </div>
+
+        
+
+    <tail>
+        <span id="github" class="tail">Find the code of this website and project on <a href="https://github.com/myriapod/ao3trendingpage">github</a></span>
+    </tail>
     </body>
     
 
-    <tail class="tail" id="tail">
-        <p id="github">Find the code of this website and project on <a href="https://github.com/myriapod/ao3trendingpage">github</a></p>
-    </tail>
+
 </html>

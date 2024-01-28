@@ -1,23 +1,35 @@
 import AO3
-from dotenv import dotenv_values
+import os
+from dotenv import load_dotenv
+from os.path import join, dirname
 import time
 from copy import deepcopy
 from re import match
-from sqlserver import SQLServer 
+from sqlserver import SQLServer
 import re
 
+dotenv_path = join(dirname(__file__), '.env')
+load_dotenv(dotenv_path)
 
 class AO3toSQL():
-    def __init__(self, timestamp, manual_env=None):
+    def __init__(self, timestamp):
         self.time = timestamp
-        if manual_env:
-            self.username = manual_env["AO3USER"]
-            self.password = manual_env["AO3PWD"]
-        else:
-            self.username = dotenv_values(".env")["AO3USER"]
-            self.password = dotenv_values(".env")["AO3PWD"]
+        manual_env={
+            "MDBUSER": os.environ.get('MDBUSER'),
+            "MDBPWD": os.environ.get('MDBPWD'),
+            "DATABASE": os.environ.get('DATABASE'),
+            "TABLEDATA": os.environ.get('TABLEDATA'),
+            "TABLEID": os.environ.get('TABLEID'),
+            "TABLERANK": os.environ.get('TABLERANK'),
+            "SQLHOST": os.environ.get('SQLHOST'),
+            "AO3USER": os.environ.get('AO3USER'),
+            "AO3PWD": os.environ.get('AO3PWD'),
+            "AO3WAITINGTIME": os.environ.get('AO3WAITINGTIME')
+            }
+        self.username = manual_env["AO3USER"]
+        self.password = manual_env["AO3PWD"]
         self.waitingtime = 240
-        self.sqlserver = SQLServer(manual_env=manual_env)
+        self.sqlserver = SQLServer()
         self.sqlserver.connection()
         # connect to the SQL server
         
@@ -136,9 +148,17 @@ class AO3toSQL():
             data[entry]["latest_updated"] = max(meta["date_updated"], meta["date_published"], meta["date_edited"]).split(" ")[0]
 
             if meta["categories"]:
-                data[entry]["categories"] = ', '.join(meta["categories"])
+                if len(meta["categories"])>1:
+                    data[entry]["categories"] = "Multi"
+                else:
+                    data[entry]["categories"] = meta["categories"]
             else:
                 data[entry]["categories"] = "N/A"
+
+            if meta["rating"]:
+                data[entry]["rating"] = meta["rating"]
+            else:
+                data[entry]["rating"] = "N/A"
             
             if len(meta["tags"])>=4:
                 data[entry]["tags"] = ', '.join(meta["tags"][:4])

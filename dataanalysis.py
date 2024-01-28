@@ -1,5 +1,4 @@
 from packages.sqlserver import SQLServer
-from pprint import pp
 import sys
 
 def main(timestamp):
