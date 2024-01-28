@@ -17,7 +17,7 @@ def index():
         "M/M": "slash",
         "F/M": "het",
         "F/F": "femslash",
-        "Multi": "multi.png",
+        "Multi": "multi",
         "Other": "other",
         "N/A": "none",
         "Gen": "gen"
@@ -27,7 +27,7 @@ def index():
         "Not Rated": "notrated",
         "Explicit": "explicit",
         "Teen": "teen",
-        "General": "general-audience"
+        "General Audiences": "general-audience"
     }
 
     return render_template('index.html', ranking=data, timestamp=timestamp, category_table=category_table, rating_table=rating_table)

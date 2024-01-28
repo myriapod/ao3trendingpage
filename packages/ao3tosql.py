@@ -7,6 +7,7 @@ from copy import deepcopy
 from re import match
 from sqlserver import SQLServer
 import re
+from progressbar import printProgressBar
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -75,8 +76,6 @@ class AO3toSQL():
                 time.sleep(self.waitingtime)
 
         fandom = fandom.strip().replace('*','')
-        # will be removed, just for monitoring during dev phase
-        print(fandom, search.total_results) # type: ignore
 
         stats_format = {
                 "fandom": fandom,
@@ -92,7 +91,7 @@ class AO3toSQL():
                 "date_updated": "1111-11-11",
                 } 
 
-        
+        iter = 0
         for i in range(1, search.pages+1):
             search.page=i
             ratelimit=True
@@ -101,14 +100,14 @@ class AO3toSQL():
                     search.update()
                     ratelimit=False
                 except AO3.utils.HTTPError:
-                    print(f"update ratelimit - waiting {self.waitingtime}")
+                    printProgressBar(iteration=iter, total=search.total_results, prefix=f"data extraction for fandom {fandom}", suffix=f"hit rate limit - waiting {self.waitingtime} seconds")
                     time.sleep(self.waitingtime)
 
             for result in search.results: # type: ignore
 
                 # need to check that the fandom name is really in the list of fandoms since there is no NO crossover options on the api
                 if re.match(refandom, ' - '.join(result.metadata["fandoms"])):
-                    
+                    iter += 1
                     # need to do a deep copy of the template for the dict because
                     statdata = deepcopy(stats_format)
 
@@ -125,11 +124,12 @@ class AO3toSQL():
 
                     self.sqlserver.add_data(statdata)
                     self.sqlserver.add_id(statdata)
-                    print(f'added {fandom} - {statdata["id"]}')
+                    printProgressBar(iteration=iter, total=search.total_results, prefix=f"Data extraction progress:")
 
     def metadata_ranking(self):
         data = self.sqlserver.get_ranking_for_metadata()
 
+        iter=0
         for entry in data:
             meta = self.ao3_workid_search(data[entry]["workid"])
             data[entry]["worktitle"] = meta["title"]
@@ -151,7 +151,7 @@ class AO3toSQL():
                 if len(meta["categories"])>1:
                     data[entry]["categories"] = "Multi"
                 else:
-                    data[entry]["categories"] = meta["categories"]
+                    data[entry]["categories"] = meta["categories"][0]
             else:
                 data[entry]["categories"] = "N/A"
 
@@ -166,5 +166,7 @@ class AO3toSQL():
                 data[entry]["tags"] = ', '.join(meta["tags"])
             
             data[entry]["words"] = meta["words"]
+            iter+=1
+            printProgressBar(iteration=iter, total=len(data), prefix="Data vizualisation progress: ")
 
         return data

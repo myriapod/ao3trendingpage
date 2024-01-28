@@ -1,4 +1,4 @@
-from packages.ao3tosql import AO3toSQL
+from ao3tosql import AO3toSQL
 import csv
 import sys
 

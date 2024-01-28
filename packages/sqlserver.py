@@ -100,27 +100,39 @@ class SQLServer():
         return top_ten
     
     def update_ranking(self, workid, fandom_name, rank, timestamp):
+
         # if the work is already in the ranking
-        self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
-        if len(self.cursor.fetchall())!=0:
-            self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
-            for e in self.cursor:
-                rankDiff = str(e[2] - rank)
-                self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword={rankDiff}, timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
-                self.conn.commit()
-                self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword={rankDiff} WHERE workid={workid}")
-                self.conn.commit()
-                break
-        # add an elif for the HOT label when it's not new but going strong
-        else: # new workid in the ranking table
+        self.cursor.execute(f"SELECT ranking FROM {self.tableid} WHERE workid={workid}")
+        old_rank = [e[0] for e in self.cursor]
+
+        if old_rank[0] == None : # new workid in the ranking table
             # self.cursor.execute(f"SElECT * FROM {self.tabledata} WHERE workid={workid} HAVING COUNT(*)=2") 
-            print("no work: ")
-            self.cursor.execute(f"UPDATE {self.tablerank} SET ranking=NULL WHERE timestmp<>'{timestamp}'") # set the rank to 0 to the fics that have left the ranking
-            self.conn.commit()
             self.cursor.execute(f'''INSERT INTO {self.tablerank} (workid, fandom, ranking, timestmp, keyword) VALUES ({workid}, "{fandom_name}", {rank}, "{timestamp}", "NEW")''')
             self.conn.commit()
             self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword='NEW' WHERE workid={workid}")
             self.conn.commit()
+
+        else:
+            self.cursor.execute(f"SELECT * FROM {self.tablerank} WHERE workid={workid}")
+            for e in self.cursor:
+                rankDiff = int(old_rank[0] - rank)
+
+                if rankDiff==0:
+                    self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword="=", timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
+                    self.conn.commit()
+                    self.cursor.execute(f'''UPDATE {self.tableid} SET ranking={rank}, keyword="=" WHERE workid={workid}''')
+                    self.conn.commit()
+                else:
+                    self.cursor.execute(f"UPDATE {self.tableid} SET ranking={rank}, keyword={str(rankDiff)} WHERE workid={workid}")
+                    self.conn.commit()
+                    self.cursor.execute(f'''UPDATE {self.tablerank} SET ranking={rank}, keyword={str(rankDiff)}, timestmp="{timestamp}", fandom="{fandom_name}" WHERE workid={workid}''')
+                    self.conn.commit()
+                break
+        # add an elif for the HOT label when it's not new but going strong
+    
+    def update_out_of_ranking(self, timestamp):
+        self.cursor.execute(f"UPDATE {self.tablerank} SET ranking=NULL WHERE timestmp<>'{timestamp}'") # set the rank to 0 to the fics that have left the ranking
+
         self.conn.commit()
 
     def update_metadata(self, data):
