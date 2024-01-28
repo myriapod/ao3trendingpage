@@ -99,28 +99,19 @@
 }
 
 .additional-right tr {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
     border-bottom: none;
 }
+
 .additional-right-left {
     text-align: right;
     font-weight: bold;
-    background-color: aqua;
 }
 .additional-right-right {
     text-align: left;
-    background-color: blue;
 }
 
 .additional-left {
     margin: 0%;
-}
-
-.additional-left thead {
-    display: none;
 }
 
 .additional-left tr {
