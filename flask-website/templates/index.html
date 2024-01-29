@@ -9,7 +9,7 @@
             <h1 class="heading" id="heading">
                 <a href="/" class="no-deco-link">
                     <img class="logo" src="https://archiveofourown.org/images/ao3_logos/logo_42.png" alt="AO3"></img>
-                    <span>(Ateez) Trending Page</span>
+                    <span>Trending Page</span>
                 </a>
             </h1>
         </div>
@@ -21,18 +21,18 @@
             Fandom: <select name="fandom-choice" id="fandom-choice" class="fandom-choice">
                 <option value="" selected="selected" class="fandom-selected">Select fandom</option>
             </select>
-
-            <div id="to-delete">
-                <p>Chosen fandom = <a class="fandom-chosen" id="fandom-chosen"></a></p>
-            </div>
+        
         </form>
+
+        <div id="to-delete">
+            <p>Chosen fandom = ATEEZ (only fandom available atm)</p>
+        </div>
 
         
 
         <div class="last-update" id="last update">
             <span>Last update:</span>
             <span id="timestamp">{{ timestamp }}</span>
-            <button class="refresh-button" onclick="">&#x21bb;</button>
         </div>
 
         
@@ -49,7 +49,16 @@
                     {% for entry in ranking %}
                         <tr>
                         <td><a href={{ entry["link"] }} target="_blank">{{ entry["ranking"] }}</a></td>
-                        <td><a href={{ entry["link"] }} target="_blank">{{ entry["keyword"] }}</a></td>
+                        <td>{% if entry["keyword"]=="NEW" %}
+                            &#x1F195;
+                            {% elif entry["keyword"]=="=" %}
+                            =
+                            {% elif '-' in entry["keyword"] %}
+                            <a href={{ entry["link"] }} target="_blank">&#x1F53D; {{ entry["keyword"] }}</a>
+                            {% else %}
+                            <a href={{ entry["link"] }} target="_blank">&#x1F53C; +{{ entry["keyword"] }}</a>
+                            {% endif %}
+                            </td>
                         <td><a href={{ entry["link"] }} target="_blank">{{ entry["worktitle"] }}</a></td>
                         <td><a href={{ entry["link"] }} target="_blank">{{ entry["authors"] }}</a></td>
                         </tr>

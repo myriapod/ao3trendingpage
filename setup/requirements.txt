@@ -1,0 +1,7 @@
+lxml
+requests
+BeautifulSoup4
+ao3_api
+dotenv
+mariadb
+flask

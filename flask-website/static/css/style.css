@@ -3,6 +3,8 @@
     position: relative;
     font-size: 12px;
     text-align: center;
+    width: 100%;
+    
  }
  
  /* AO3 trending page title */
@@ -30,7 +32,7 @@
  }
  
  .fandom {
-     display: none;
+    display: none;
  } 
  
  .fandom-choice {
@@ -57,14 +59,6 @@
      text-align: right;
  }
  
- .refresh-button {
-     border: None;
-     background-color: white;
-     padding: 0px;
-     vertical-align: middle;
-     display: none;
- }
- 
  .ranking table {
      /* margin-top: 10%; */
      /* border: 1px solid; */
@@ -88,6 +82,7 @@
      color: black;
      text-decoration: none;
 }
+
 
 .additional-info {
     font-size: 12px;

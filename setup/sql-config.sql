@@ -1,4 +1,6 @@
-CREATE TABLE stats (   
+CREATE DATABASE ao3trendingpage;
+
+CREATE TABLE ao3trendingpage.stats (   
     id int auto_increment PRIMARY KEY,
     fandom varchar(250),
     workid int,
@@ -13,7 +15,7 @@ CREATE TABLE stats (
     date_updated date
 );
 
-CREATE TABLE workid (
+CREATE TABLE ao3trendingpage.workid (
     workid int PRIMARY KEY,
     ranking int,
     commentsDiff int,
@@ -23,7 +25,7 @@ CREATE TABLE workid (
     keyword varchar(50)
 );
 
-CREATE TABLE ranking (
+CREATE TABLE ao3trendingpage.ranking (
     workid int PRIMARY KEY,
     fandom varchar(50),
     ranking int,

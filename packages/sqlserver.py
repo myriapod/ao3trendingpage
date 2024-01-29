@@ -178,6 +178,11 @@ class SQLServer():
 
         return data
 
+    def get_timestamp_for_html(self):
+        self.cursor.execute(f"SELECT timestmp FROM {self.tablerank} WHERE ranking=1")
+        time = self.cursor.fetchall()[0][0]
+        return time
+
     def json_dump(self, jsfile: str): # not used
         keys=[]
         self.cursor.execute(f"SHOW COLUMNS FROM {self.tablerank}")

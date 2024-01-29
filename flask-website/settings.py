@@ -15,4 +15,4 @@ SQLHOST=os.environ.get('SQLHOST')
 AO3USER=os.environ.get('AO3USER')
 AO3PWD=os.environ.get('AO3PWD')
 AO3WAITINGTIME=os.environ.get('AO3WAITINGTIME')
-AO3TIMESTAMP=os.environ["AO3TIMESTAMP"]
+AO3TIMESTAMP=os.environ.get("AO3TIMESTAMP")

@@ -1,8 +1,0 @@
-lxml
-requests
-BeautifulSoup4
-ao3_api
-dotenv
-#had to modify line 112 of AO3/search.py to         
-# self.total_results = int(maindiv.find("h3", {"class": "heading"}).getText().strip().split(" ")[0].replace(',',''))
-# to make sure the search was possible by removing the , from large numbers
