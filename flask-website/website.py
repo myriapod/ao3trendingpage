@@ -9,9 +9,9 @@ app.config.from_pyfile('settings.py')
 @app.route('/')
 def index():
     # the manual_env kind of sucks, it's a working work around but it's not very pretty
-    timestamp=app.config["AO3TIMESTAMP"]
-    ao3 = AO3toSQL(timestamp=timestamp) # no need for the timestamp at this stage
+    ao3 = AO3toSQL(timestamp=None) # no need for the timestamp at this stage
     data = ao3.sqlserver.get_ranking_for_html()
+    timestamp = ao3.sqlserver.get_timestamp_for_html()
 
     category_table = {
         "M/M": "slash",
@@ -26,7 +26,7 @@ def index():
         "Mature": "mature",
         "Not Rated": "notrated",
         "Explicit": "explicit",
-        "Teen": "teen",
+        "Teen And Up Audiences": "teen",
         "General Audiences": "general-audience"
     }
 

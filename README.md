@@ -1,35 +1,25 @@
 # ao3trendingpage
-Data engineering personal project that displays a trending page for AO3 fics of a specific fandom.
+Personal project that displays a trending page for AO3 fics of a specific fandom.
 
-<h3>Current status</h3>
-- ran one time from extraction to analysis, updating the top10.json file
+<h2>Current stage</h2>
 
-<h3>To do</h3>
-- hosting the sql database in the cloud (azure?)
-- connecting with the cloud hosted database
-- docker container + cronjob to run the data extraction once a day (on own raspberry pi server?)
-- web interface
-- data cleanup
+- Works on self host
+- Flask website is up
+- Only works for the ATEEZ fandom
 
-<h1>How to</h1>
+<h2>Set up</h2>
+<h3>1. Complete <code>.env</code> file</h3>
 
-create a .env file in the packages folder to hold the variables:
-<code>
-AO3USER=
-AO3PWD=
-MDBUSER=
-MDBPWD=
-DATABASE=ao3trendingpage
-TABLEDATA=stats
-TABLEID=workid
-TABLERANK=ranking
-SQLHOST=
-AO3WAITINGTIME=240</code>
+Especially for variables <code>AO3USER</code> and <code>AO3PWD</code> (your username and password for AO3 sessions). The rest are filled in with a default value, that you can also change.
+Watch out for the <code>MDBUSER</code> and <code>MDBPWD</code> that are defaulted, when you need to set up mariadb.
 
-run the <code>main.sh</code> file to get everything working
+<h3>2. Run <code>main.sh</code></h3>
 
-the database is defined in the sql-config.sql file
+<code>main.sh</code> should be all you need to run to set everything up.
 
+<h4>Troubleshooting:</h4>
 
-<h1>To do:</h1>
-rework the ranking database so that it can store metadata about the top 10 (only)
+If you encounter an error when running <code>main.sh</code> involving the number of total results that contain a ",", you should modify the package files for the AO3_api as such:
+
+<code>file: AO3/search.py, line 112:</code>
+<code>self.total_results = int(maindiv.find("h3", {"class": "heading"}).getText().strip().split(" ")[0].replace(',',''))</code>
