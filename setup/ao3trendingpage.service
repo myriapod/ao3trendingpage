@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve ao3trendingpage project
+After=network.target
+
+[Service]
+User=myri
+Group=www-data
+WorkingDirectory=/home/myri/Documents/coding-projects/ao3trendingpage
+ExecStart=/home/myri/.local/bin/gunicorn --config flask-website/gunicorn_config.py --workers 3 --bind 127.0.0.1:5000 --chdir flask-website flask-website.website:app
+
+
+[Install]
+WantedBy=multi-user.target
