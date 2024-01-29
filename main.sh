@@ -25,6 +25,9 @@ sudo systemctl daemon-reload
 sudo systemctl start ao3trendingpage
 sudo systemctl enable ao3trendingpage
 
+sudo apt install hostsed
+sudo hostsed add 127.0.0.1 ao3trendingpage www.ao3trendingpage.com ao3trendingpage.com
+
 sudo cp setup/ao3trendingpage.conf /etc/nginx/sites-available/ao4trendingpage.conf
 sudo ln -s /etc/nginx/sites-available/ao4trendingpage.conf /etc/nginx/sites-enabled
 sudo systemctl restart nginx
