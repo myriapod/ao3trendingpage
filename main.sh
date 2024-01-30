@@ -36,6 +36,12 @@ sudo cp setup/ao3trendingpage.conf /etc/nginx/sites-available/ao4trendingpage.co
 sudo ln -s /etc/nginx/sites-available/ao4trendingpage.conf /etc/nginx/sites-enabled
 sudo systemctl restart nginx
 
+# add ao3reload alias
+echo "alias ao3reload='sudo systemctl daemon-reload
+sudo systemctl start ao3trendingpage
+sudo systemctl enable ao3trendingpage'" >> ~/.bashrc
+source ~/.bashrc
+
 # run the flask app (in dev mode)
 # env FLASK_APP=flask-website/website.py python3 -m flask run --debug
 # deploy in prod with gunicorn

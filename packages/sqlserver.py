@@ -71,9 +71,18 @@ class SQLServer():
 
     def get_last_two(self, workid):
         last_two = []
+        self.cursor.execute(f"SHOW COLUMNS FROM {self.tabledata}")
+        header = self.cursor.fetchall()
+
         self.cursor.execute(f"SELECT * FROM {self.tabledata} WHERE workid={workid} ORDER BY id DESC LIMIT 2")
-        for entry in self.cursor:
-            last_two.append(entry)
+        rows = self.cursor.fetchall()
+        
+        for t in rows:
+            dic = {}
+            for r in range(0, len(t)):
+                dic[header[r][0]] = t[r]
+            last_two.append(dic)
+
         return last_two
         
     def get_list_workid(self):
@@ -83,17 +92,17 @@ class SQLServer():
             list_workid.append(workid)
         return list_workid
 
-    def update_stats(self, workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff):
-        self.cursor.execute(f"UPDATE {self.tableid} SET commentsDiff = {commentsDiff}, kudosDiff = {kudosDiff}, bookmarksDiff = {bookmarksDiff}, hitsDiff = {hitsDiff} WHERE workid={workid}")
+    def update_stats(self, workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff, score):
+        self.cursor.execute(f"UPDATE {self.tableid} SET commentsDiff = {commentsDiff}, kudosDiff = {kudosDiff}, bookmarksDiff = {bookmarksDiff}, hitsDiff = {hitsDiff}, score={score} WHERE workid={workid}")
         self.conn.commit()
 
     def get_top_10(self, crossover=False):
         top_ten = []
 
-        if crossover:
-            self.cursor.execute(f"SELECT * FROM {self.tableid} ORDER BY hitsDiff DESC LIMIT 10")
+        if crossover: # not supported
+            self.cursor.execute(f"SELECT * FROM {self.tableid} ORDER BY score DESC LIMIT 10")
         else:
-            self.cursor.execute(f"SELECT {self.tableid}.* FROM {self.tableid} WHERE ({self.tableid}.workid) IN (SELECT {self.tabledata}.workid FROM {self.tabledata} WHERE {self.tabledata}.crossover=false) ORDER BY hitsDiff DESC LIMIT 10")
+            self.cursor.execute(f"SELECT {self.tableid}.* FROM {self.tableid} WHERE ({self.tableid}.workid) IN (SELECT {self.tabledata}.workid FROM {self.tabledata} WHERE {self.tabledata}.crossover=false) ORDER BY score DESC LIMIT 10")
             
         for top in self.cursor:
             top_ten.append(top)

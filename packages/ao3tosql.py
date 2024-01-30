@@ -121,7 +121,7 @@ class AO3toSQL():
                     self.sqlserver.add_data(statdata)
                     self.sqlserver.add_id(statdata)
                     print(f'{self.time} - Entered stats data for work {statdata["id"]}')
-                    print(f'Progress = {100 * (iter / float(len(search.total_results)))}') #type:ignore
+                    print("Progress = "+ "{:.2f}".format(100 * (iter / float(search.total_results))))
 
     def metadata_ranking(self):
         data = self.sqlserver.get_ranking_for_metadata()
@@ -167,7 +167,7 @@ class AO3toSQL():
                 data[entry]["words"] = meta["words"]
                 iter+=1
                 print(f'{self.time} - Entered metadata for work {data[entry]["worktitle"]} ({data[entry]["workid"]})')
-                print(f'Progress = {100 * (iter / float(len(data)))}')
+                print("Progress = "+ "{:.2f}".format(100 * (iter / float(len(data)))))
             except AttributeError as err:
                 print(f'{self.time} - Error for {data[entry]["workid"]}')
                 print(err)

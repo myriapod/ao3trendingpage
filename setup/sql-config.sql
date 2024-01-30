@@ -22,7 +22,8 @@ CREATE TABLE ao3trendingpage.workid (
     kudosDiff int,
     bookmarksDiff int,
     hitsDiff int,
-    keyword varchar(50)
+    keyword varchar(50),
+    score int
 );
 
 CREATE TABLE ao3trendingpage.ranking (
