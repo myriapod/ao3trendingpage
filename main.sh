@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # install mariadb
 sudo apt-get update
 sudo apt-get install mariadb
@@ -15,8 +17,10 @@ cp .env packages/.env
 
 # run the data import once
 sh setup/reload.sh
+
+# sudo apt-get install postfix
 # set up the data import as a cron that runs every day at 3 am
-(crontab -l 2>/dev/null; echo "0 3 * * * setup/reload.sh") | crontab -
+(crontab -l 2>/dev/null; echo "0 22 * * * sh `pwd`/setup/reload.sh >> `pwd`/setup/reload_output.log") | crontab -
 
 sudo apt-get install nginx
 

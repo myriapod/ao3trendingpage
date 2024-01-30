@@ -4,7 +4,6 @@ import sys
 
 def main(timestamp):
     search = AO3toSQL(timestamp=timestamp)
-    search.ao3_connect()
 
     with open(f'packages/fandom_list.csv', 'r') as fl:
         csvfile = csv.DictReader(fl)

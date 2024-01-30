@@ -7,7 +7,6 @@ from copy import deepcopy
 from re import match
 from sqlserver import SQLServer
 import re
-from progressbar import printProgressBar
 
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
@@ -33,26 +32,23 @@ class AO3toSQL():
         self.sqlserver = SQLServer()
         self.sqlserver.connection()
         # connect to the SQL server
-        
-    def ao3_connect(self):
-        # connect to the ao3 session
+
+        # connect to ao3
         ratelimit=True
         while ratelimit:
             try:
-                session = AO3.Session(self.username, self.password)
+                self.session = AO3.Session(self.username, self.password)
                 ratelimit=False
             except AO3.utils.HTTPError:
                 print("session ratelimit")
                 time.sleep(self.waitingtime)
-        return session
-    
 
-    def ao3_workid_search(self, workid, session=None):
+    def ao3_workid_search(self, workid):
         # search a work with the workid - not used
         ratelimit=True
         while ratelimit:
             try:
-                workdata = AO3.Work(workid=workid, session=session, load=True, load_chapters=False).metadata
+                workdata = AO3.Work(workid=workid, session=self.session, load=True, load_chapters=False).metadata
                 ratelimit = False
             except AO3.utils.HTTPError:
                 print("session ratelimit")
@@ -124,49 +120,56 @@ class AO3toSQL():
 
                     self.sqlserver.add_data(statdata)
                     self.sqlserver.add_id(statdata)
-                    printProgressBar(iteration=iter, total=search.total_results, prefix=f"Data extraction progress:")
+                    print(f'{self.time} - Entered stats data for work {statdata["id"]}')
+                    print(f'Progress = {100 * (iter / float(len(search.total_results)))}') #type:ignore
 
     def metadata_ranking(self):
         data = self.sqlserver.get_ranking_for_metadata()
 
         iter=0
         for entry in data:
-            meta = self.ao3_workid_search(data[entry]["workid"])
-            data[entry]["worktitle"] = meta["title"]
-            data[entry]["authors"] = ' & '.join(meta["authors"])
+            try:
+                meta = self.ao3_workid_search(data[entry]["workid"])
+                
+                data[entry]["worktitle"] = meta["title"]
+                data[entry]["authors"] = ' & '.join(meta["authors"])
 
-            if meta["categories"]:
-                data[entry]["relationship"] = meta["relationships"][0]
-            else: 
-                data[entry]["relationship"] = "N/A"
+                if meta["categories"]:
+                    data[entry]["relationship"] = meta["relationships"][0]
+                else: 
+                    data[entry]["relationship"] = "N/A"
 
-            if meta["expected_chapters"] == None:
-                data[entry]["chapters"] = f'{meta["nchapters"]}/?'
-            else:
-                data[entry]["chapters"] = f'{meta["nchapters"]}/{meta["expected_chapters"]}'
-
-            data[entry]["latest_updated"] = max(meta["date_updated"], meta["date_published"], meta["date_edited"]).split(" ")[0]
-
-            if meta["categories"]:
-                if len(meta["categories"])>1:
-                    data[entry]["categories"] = "Multi"
+                if meta["expected_chapters"] == None:
+                    data[entry]["chapters"] = f'{meta["nchapters"]}/?'
                 else:
-                    data[entry]["categories"] = meta["categories"][0]
-            else:
-                data[entry]["categories"] = "N/A"
+                    data[entry]["chapters"] = f'{meta["nchapters"]}/{meta["expected_chapters"]}'
 
-            if meta["rating"]:
-                data[entry]["rating"] = meta["rating"]
-            else:
-                data[entry]["rating"] = "N/A"
-            
-            if len(meta["tags"])>=4:
-                data[entry]["tags"] = ', '.join(meta["tags"][:4])
-            else:
-                data[entry]["tags"] = ', '.join(meta["tags"])
-            
-            data[entry]["words"] = meta["words"]
-            iter+=1
-            printProgressBar(iteration=iter, total=len(data), prefix="Data vizualisation progress: ")
+                data[entry]["latest_updated"] = max(meta["date_updated"], meta["date_published"], meta["date_edited"]).split(" ")[0]
+
+                if meta["categories"]:
+                    if len(meta["categories"])>1:
+                        data[entry]["categories"] = "Multi"
+                    else:
+                        data[entry]["categories"] = meta["categories"][0]
+                else:
+                    data[entry]["categories"] = "N/A"
+
+                if meta["rating"]:
+                    data[entry]["rating"] = meta["rating"]
+                else:
+                    data[entry]["rating"] = "N/A"
+                
+                if len(meta["tags"])>=4:
+                    data[entry]["tags"] = ', '.join(meta["tags"][:4])
+                else:
+                    data[entry]["tags"] = ', '.join(meta["tags"])
+                
+                data[entry]["words"] = meta["words"]
+                iter+=1
+                print(f'{self.time} - Entered metadata for work {data[entry]["worktitle"]} ({data[entry]["workid"]})')
+                print(f'Progress = {100 * (iter / float(len(data)))}')
+            except AttributeError as err:
+                print(f'{self.time} - Error for {data[entry]["workid"]}')
+                print(err)
 
         return data

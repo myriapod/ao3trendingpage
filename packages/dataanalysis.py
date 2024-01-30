@@ -1,6 +1,5 @@
 from sqlserver import SQLServer
 import sys
-from progressbar import printProgressBar
 
 def main(timestamp):
     server = SQLServer()
@@ -19,7 +18,8 @@ def main(timestamp):
             server.update_stats(workid, commentsDiff, kudosDiff, bookmarksDiff, hitsDiff)
         else:
             server.update_stats(workid, last_two[0][4], last_two[0][5], last_two[0][6], last_two[0][7])
-        printProgressBar(iteration=iter, total=len(list_workid), prefix=f"Data analysis progress: ")
+        print(f'{timestamp} - Entered analyzed data for work {workid}')
+        print(f'Progress = {100 * (iter / float(len(list_workid)))}')
     
     top_ten = server.get_top_10(crossover=False) # consider fandom specific top 10
     # only works on ATEEZ for now
