@@ -1,0 +1,31 @@
+services:
+  website:
+    image: nginx
+    ports:
+      - "8000:80"
+    container_name: ao3trendingpage-website
+    volumes:
+      - /home/Administrateur/Bureau/Solene/SELENIUM/ao3trendingpage/flask-website/templates/index.html:/usr/share/www/html/index.html
+    networks:
+      database_network:
+        ipv4_address: 172.20.0.11
+
+  database:
+    image: "docker.io/library/mariadb:10.3"
+    container_name: ao3trendingpage-database
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - ./database/mysql/:/var/lib/mysql/
+    networks:
+      database_network:
+        ipv4_address: 172.20.0.10
+ 
+networks:
+  database_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

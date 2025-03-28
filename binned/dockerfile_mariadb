@@ -1,0 +1,6 @@
+FROM ubuntu:latest
+RUN apt-get -y update && apt-get -y install mariadb
+
+COPY database/sql-config.sql /tmp
+EXPOSE 3306
+CMD ["mysql"; "-hao3trendingpage-database -u root -proot < /tmp/sql-config.sql"]
