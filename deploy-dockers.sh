@@ -17,3 +17,4 @@
 
 sudo docker compose -f dockercompose.yml up &
 sudo docker exec -i ao3trendingpage-database mysql -u root -proot < database/sql-config.sql
+ 
